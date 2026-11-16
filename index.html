@@ -132,6 +132,14 @@
           <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
           <span>Mi Analítica y Repaso</span>
         </button>
+        <button id="tab-btn-theory" onclick="switchTab('theory')" class="tab-btn text-slate-600 hover:bg-slate-200/70 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition">
+          <i data-lucide="book-open-check" class="w-4 h-4"></i>
+          <span>Teoría y Videos</span>
+        </button>
+        <button id="tab-btn-real" onclick="switchTab('real')" class="tab-btn text-slate-600 hover:bg-slate-200/70 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition">
+          <i data-lucide="camera" class="w-4 h-4"></i>
+          <span>Aplicación Real (3 Fotos)</span>
+        </button>
       </div>
     </nav>
   </header>
@@ -545,6 +553,316 @@
 
     </section>
 
+    <!-- ===================================================================== -->
+    <!-- PESTAÑA 5: TEORÍA CLARA (3 ECUACIONES) Y VIDEOS EXPLICATIVOS          -->
+    <!-- ===================================================================== -->
+    <section id="view-theory" class="hidden space-y-6">
+      <!-- Encabezado Teoría -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-xs font-bold uppercase tracking-wider">Fundamentación Teórica</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">Las 3 Secciones Cónicas y sus Tres Formas de Ecuación</h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">Definición geométrica y conversión entre ecuación canónica (origen), ordinaria (centro/vértice $h,k$) y general.</p>
+          </div>
+          <button onclick="switchTab('lab')" class="self-start md:self-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-sm transition">
+            <i data-lucide="orbit" class="w-4 h-4"></i>
+            <span>Probar en Laboratorio</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tarjetas de las 3 Cónicas (Circunferencia, Parábola, Elipse) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- 1. Circunferencia -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-bold">1. Circunferencia</span>
+              <i data-lucide="circle-dot" class="w-5 h-5 text-emerald-600"></i>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <strong>Definición:</strong> Lugar geométrico de todos los puntos $(x, y)$ del plano que equidistan una distancia constante llamada <strong>radio ($r$)</strong> de un punto fijo llamado <strong>centro $C(h, k)$</strong>.
+            </p>
+            <div class="space-y-2.5 pt-2">
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">1. Canónica (Centro en el origen $0,0$)</div>
+                <div class="text-sm font-semibold text-slate-900 mt-1">$$x^2 + y^2 = r^2$$</div>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                <div class="text-[11px] font-bold text-emerald-700 uppercase">2. Ordinaria (Centro $C(h,k)$)</div>
+                <div class="text-sm font-semibold text-slate-900 mt-1">$$(x - h)^2 + (y - k)^2 = r^2$$</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">3. Ecuación General ($A = C$)</div>
+                <div class="text-sm font-semibold text-slate-900 mt-1">$$x^2 + y^2 + Dx + Ey + F = 0$$</div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-slate-100 text-xs text-slate-500">
+            <strong>Elementos clave:</strong> Centro $C(h, k)$ y radio $r > 0$.
+          </div>
+        </div>
+
+        <!-- 2. Parábola -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-sky-100 text-sky-800 text-xs font-bold">2. Parábola</span>
+              <i data-lucide="spline" class="w-5 h-5 text-sky-600"></i>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <strong>Definición:</strong> Lugar geométrico de los puntos $(x, y)$ que están a la misma distancia de un punto fijo llamado <strong>foco ($F$)</strong> y de una recta fija llamada <strong>directriz ($D$)</strong>.
+            </p>
+            <div class="space-y-2.5 pt-2">
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">1. Canónica (Vértice en $0,0$)</div>
+                <div class="text-xs sm:text-sm font-semibold text-slate-900 mt-1">$$x^2 = 4py \quad \text{ó} \quad y^2 = 4px$$</div>
+              </div>
+              <div class="p-3 rounded-xl bg-sky-50/70 border border-sky-200">
+                <div class="text-[11px] font-bold text-sky-700 uppercase">2. Ordinaria (Vértice $V(h,k)$)</div>
+                <div class="text-xs sm:text-sm font-semibold text-slate-900 mt-1">$$(x - h)^2 = 4p(y - k)$$</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">3. Ecuación General (Solo 1 cuadrado)</div>
+                <div class="text-xs sm:text-sm font-semibold text-slate-900 mt-1">$$Ax^2 + Dx + Ey + F = 0$$</div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-slate-100 text-xs text-slate-500">
+            <strong>Elementos clave:</strong> Vértice $V(h, k)$, distancia focal $p$, Foco $F$ y Lado Recto $= |4p|$.
+          </div>
+        </div>
+
+        <!-- 3. Elipse -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-violet-100 text-violet-800 text-xs font-bold">3. Elipse</span>
+              <i data-lucide="orbit" class="w-5 h-5 text-violet-600"></i>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <strong>Definición:</strong> Lugar geométrico de los puntos $(x, y)$ cuya <strong>suma de distancias</strong> a dos puntos fijos llamados <strong>focos ($F_1, F_2$)</strong> es constante e igual al eje mayor ($2a$).
+            </p>
+            <div class="space-y-2.5 pt-2">
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">1. Canónica (Centro en $0,0$)</div>
+                <div class="text-sm font-semibold text-slate-900 mt-1">$$\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$$</div>
+              </div>
+              <div class="p-3 rounded-xl bg-violet-50/70 border border-violet-200">
+                <div class="text-[11px] font-bold text-violet-700 uppercase">2. Ordinaria (Centro $C(h,k)$)</div>
+                <div class="text-sm font-semibold text-slate-900 mt-1">$$\frac{(x - h)^2}{a^2} + \frac{(y - k)^2}{b^2} = 1$$</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">3. Ecuación General ($A \neq C$, mismo signo)</div>
+                <div class="text-sm font-semibold text-slate-900 mt-1">$$Ax^2 + Cy^2 + Dx + Ey + F = 0$$</div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-slate-100 text-xs text-slate-500">
+            <strong>Relación pitagórica:</strong> $a^2 = b^2 + c^2$ (con $a > b$) y excentricidad $e = \frac{c}{a} < 1$.
+          </div>
+        </div>
+      </div>
+
+      <!-- Reproductor de Videos Explicativos Incrustados -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="play-circle" class="w-5 h-5 text-rose-600"></i>
+              <span>Videoteca Explicativa de Secciones Cónicas</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">Selecciona una clase en video para repasar cómo extraer datos y graficar desde las ecuaciones.</p>
+          </div>
+          <a id="video-external-link" href="https://www.youtube.com/watch?v=PNAs2hCyHxY" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>Abrir en YouTube</span>
+          </a>
+        </div>
+
+        <!-- Botones Selector de Video -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button onclick="selectTheoryVideo(0)" id="vid-btn-0" class="vid-selector-btn text-left p-3.5 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition">
+            <div class="text-[11px] font-bold text-indigo-600 uppercase">Video 1 • Ecuaciones</div>
+            <div class="text-xs sm:text-sm font-bold text-slate-900 mt-0.5">Ecuación ordinaria y general de circunferencia, parábola y elipse</div>
+          </button>
+          <button onclick="selectTheoryVideo(1)" id="vid-btn-1" class="vid-selector-btn text-left p-3.5 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white transition">
+            <div class="text-[11px] font-bold text-slate-500 uppercase">Video 2 • Concepto Visual</div>
+            <div class="text-xs sm:text-sm font-bold text-slate-900 mt-0.5">¿Cómo se originan y distinguen las secciones cónicas en el cono?</div>
+          </button>
+          <button onclick="selectTheoryVideo(2)" id="vid-btn-2" class="vid-selector-btn text-left p-3.5 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white transition">
+            <div class="text-[11px] font-bold text-slate-500 uppercase">Video 3 • Clasificación</div>
+            <div class="text-xs sm:text-sm font-bold text-slate-900 mt-0.5">Tipos de secciones cónicas y sus elementos geométricos clave</div>
+          </button>
+        </div>
+
+        <!-- Contenedor Responsivo 16:9 del Iframe -->
+        <div class="relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-inner" style="padding-top: 56.25%;">
+          <iframe id="theory-video-iframe"
+            class="absolute top-0 left-0 w-full h-full"
+            src="https://www.youtube.com/embed/PNAs2hCyHxY"
+            title="Explicación Secciones Cónicas"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- PESTAÑA 6: APLICACIÓN REAL EN EL ENTORNO (3 FOTOGRAFÍAS)              -->
+    <!-- ===================================================================== -->
+    <section id="view-real" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Evidencia del Entorno</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">Secciones Cónicas en Objetos Reales</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-1">Identificación geométrica de la Circunferencia, la Parábola y la Elipse en objetos cotidianos. Puedes reemplazar cada imagen con tus propias fotografías tomadas esta semana.</p>
+        </div>
+        <button onclick="resetRealPhotos()" class="self-start md:self-auto inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Restaurar ilustraciones base</span>
+        </button>
+      </div>
+
+      <!-- Grid de las 3 Fotografías del Entorno -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Foto 1: Circunferencia (Borde superior de un vaso / rueda) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="relative h-60 bg-slate-100 border-b border-slate-200 flex items-center justify-center overflow-hidden">
+            <img id="real-img-0" src="" alt="Circunferencia en un vaso vista superior" class="hidden w-full h-full object-cover" />
+            <div id="real-svg-0" class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-100 p-4">
+              <svg viewBox="0 0 280 200" class="w-full h-full">
+                <!-- Mesa vista desde arriba -->
+                <rect x="10" y="10" width="260" height="180" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+                <!-- Sombra del vaso -->
+                <circle cx="144" cy="104" r="64" fill="#94a3b8" opacity="0.25"/>
+                <!-- Cuerpo y borde circular del vaso visto desde arriba -->
+                <circle cx="140" cy="100" r="62" fill="#e0f2fe" stroke="#0284c7" stroke-width="4"/>
+                <circle cx="140" cy="100" r="54" fill="#bae6fd" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4"/>
+                <!-- Superposición matemática -->
+                <circle cx="140" cy="100" r="62" fill="none" stroke="#e11d48" stroke-width="2.5" stroke-dasharray="6 3"/>
+                <circle cx="140" cy="100" r="4" fill="#e11d48"/>
+                <line x1="140" y1="100" x2="202" y2="100" stroke="#e11d48" stroke-width="2"/>
+                <text x="146" y="94" font-size="11" font-weight="bold" fill="#be123c">C(h,k)</text>
+                <text x="163" y="114" font-size="11" font-weight="bold" fill="#be123c">r = 4 cm</text>
+              </svg>
+            </div>
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold shadow">1. Circunferencia</span>
+          </div>
+
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <h3 class="font-bold text-slate-900 text-base">Borde superior de un vaso (Vista cenital)</h3>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <strong>¿Dónde está la figura?</strong> Al observar un vaso cilíndrico exactamente desde arriba, el contorno de su boca forma una <strong>circunferencia perfecta</strong>. Todos los puntos del borde de vidrio mantienen la misma distancia (radio $r$) respecto al eje central del vaso $C(h,k)$, cumpliendo $(x-h)^2 + (y-k)^2 = r^2$.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-slate-100">
+              <label class="w-full cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Subir mi foto real (Vaso / Objeto circular)</span>
+                <input type="file" accept="image/*" class="hidden" onchange="handleRealPhotoUpload(0, event)" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foto 2: Parábola (Antena parabólica / chorro de agua) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="relative h-60 bg-slate-100 border-b border-slate-200 flex items-center justify-center overflow-hidden">
+            <img id="real-img-1" src="" alt="Parábola en antena parabólica" class="hidden w-full h-full object-cover" />
+            <div id="real-svg-1" class="w-full h-full flex items-center justify-center bg-gradient-to-br from-sky-50 to-indigo-100 p-4">
+              <svg viewBox="0 0 280 200" class="w-full h-full">
+                <rect x="10" y="10" width="260" height="180" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+                <!-- Soporte antena -->
+                <line x1="75" y1="130" x2="55" y2="175" stroke="#64748b" stroke-width="5" stroke-linecap="round"/>
+                <line x1="55" y1="175" x2="105" y2="175" stroke="#475569" stroke-width="5" stroke-linecap="round"/>
+                <!-- Plato parabólico -->
+                <path d="M 110 35 Q 45 105 110 175" fill="none" stroke="#0284c7" stroke-width="6" stroke-linecap="round"/>
+                <!-- Superposición matemática de parábola -->
+                <path d="M 110 35 Q 45 105 110 175" fill="none" stroke="#e11d48" stroke-width="2" stroke-dasharray="5 3"/>
+                <!-- Brazo y receptor en el foco -->
+                <line x1="78" y1="105" x2="145" y2="105" stroke="#475569" stroke-width="3"/>
+                <circle cx="145" cy="105" r="6" fill="#e11d48"/>
+                <circle cx="78" cy="105" r="4" fill="#10b981"/>
+                <!-- Rayos paralelos reflejados al foco -->
+                <line x1="230" y1="60" x2="92" y2="60" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4"/>
+                <line x1="92" y1="60" x2="145" y2="105" stroke="#38bdf8" stroke-width="1.5"/>
+                <line x1="230" y1="150" x2="92" y2="150" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4"/>
+                <line x1="92" y1="150" x2="145" y2="105" stroke="#38bdf8" stroke-width="1.5"/>
+                <text x="154" y="109" font-size="11" font-weight="bold" fill="#be123c">Foco (Receptor)</text>
+                <text x="32" y="96" font-size="10" font-weight="bold" fill="#047857">Vértice</text>
+              </svg>
+            </div>
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-sky-600 text-white text-xs font-bold shadow">2. Parábola</span>
+          </div>
+
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <h3 class="font-bold text-slate-900 text-base">Antena Parabólica / Chorro de Agua</h3>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <strong>¿Dónde está la figura?</strong> El perfil curvo del plato de una antena satelital sigue la ecuación $(y-k)^2 = 4p(x-h)$. Gracias a la propiedad reflexiva de la parábola, todas las ondas que llegan paralelas al eje rebotan directamente hacia el <strong>Foco $F$</strong>, donde se ubica el receptor LNB.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-slate-100">
+              <label class="w-full cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 text-xs font-bold transition">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Subir mi foto real (Antena / Arco parabólico)</span>
+                <input type="file" accept="image/*" class="hidden" onchange="handleRealPhotoUpload(1, event)" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foto 3: Elipse (Vaso inclinado / perspectiva) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="relative h-60 bg-slate-100 border-b border-slate-200 flex items-center justify-center overflow-hidden">
+            <img id="real-img-2" src="" alt="Elipse en perspectiva de un vaso" class="hidden w-full h-full object-cover" />
+            <div id="real-svg-2" class="w-full h-full flex items-center justify-center bg-gradient-to-br from-violet-50 to-purple-100 p-4">
+              <svg viewBox="0 0 280 200" class="w-full h-full">
+                <rect x="10" y="10" width="260" height="180" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+                <!-- Cuerpo del vaso visto en perspectiva lateral -->
+                <path d="M 85 55 L 100 165 Q 140 180 180 165 L 195 55" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+                <!-- Boca del vaso vista en ángulo = Elipse -->
+                <ellipse cx="140" cy="55" rx="55" ry="20" fill="#ddd6fe" stroke="#6d28d9" stroke-width="3"/>
+                <!-- Superposición matemática de la Elipse -->
+                <ellipse cx="140" cy="55" rx="55" ry="20" fill="none" stroke="#e11d48" stroke-width="2" stroke-dasharray="5 3"/>
+                <line x1="85" y1="55" x2="195" y2="55" stroke="#e11d48" stroke-width="1.5"/>
+                <line x1="140" y1="35" x2="140" y2="75" stroke="#059669" stroke-width="1.5"/>
+                <circle cx="105" cy="55" r="3.5" fill="#e11d48"/>
+                <circle cx="175" cy="55" r="3.5" fill="#e11d48"/>
+                <text x="98" y="48" font-size="9" font-weight="bold" fill="#be123c">F1</text>
+                <text x="170" y="48" font-size="9" font-weight="bold" fill="#be123c">F2</text>
+                <text x="112" y="92" font-size="10" font-weight="bold" fill="#5b21b6">Eje mayor 2a</text>
+              </svg>
+            </div>
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-violet-600 text-white text-xs font-bold shadow">3. Elipse</span>
+          </div>
+
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <h3 class="font-bold text-slate-900 text-base">Boca de un vaso vista en ángulo (Perspectiva)</h3>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <strong>¿Dónde está la figura?</strong> Al fotografiar un vaso o taza desde un ángulo inclinado (corte oblicuo al cilindro), la circunferencia se proyecta visualmente como una <strong>elipse</strong> $\frac{(x-h)^2}{a^2} + \frac{(y-k)^2}{b^2} = 1$, con semieje mayor horizontal $a$, semieje menor vertical $b$ y dos focos $F_1, F_2$ sobre su eje principal.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-slate-100">
+              <label class="w-full cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-800 border border-violet-200 text-xs font-bold transition">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Subir mi foto real (Vaso inclinado / Elipse)</span>
+                <input type="file" accept="image/*" class="hidden" onchange="handleRealPhotoUpload(2, event)" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- ======================================================================= -->
@@ -852,7 +1170,7 @@
     // 4. NAVEGACIÓN Y GAMIFICACIÓN
     // =========================================================================
     function switchTab(tabName) {
-      ['exam', 'lab', 'duel', 'analytics'].forEach(t => {
+      ['exam', 'lab', 'duel', 'analytics', 'theory', 'real'].forEach(t => {
         document.getElementById(`view-${t}`).classList.add('hidden');
         const btn = document.getElementById(`tab-btn-${t}`);
         btn.classList.remove('tab-active');
@@ -867,6 +1185,8 @@
         setTimeout(resizeAndDrawCanvas, 50);
       } else if (tabName === 'analytics') {
         renderAnalyticsDashboard();
+      } else if (tabName === 'real') {
+        loadSavedRealPhotos();
       }
       renderMath();
     }
@@ -1830,12 +2150,103 @@
     }
 
     // =========================================================================
+    // 9. VIDEOTECA Y FOTOS DEL ENTORNO (OPCIÓN B DE LA ASIGNACIÓN)
+    // =========================================================================
+    const THEORY_VIDEOS = [
+      {
+        embed: 'https://www.youtube.com/embed/PNAs2hCyHxY',
+        watch: 'https://www.youtube.com/watch?v=PNAs2hCyHxY'
+      },
+      {
+        embed: 'https://www.youtube.com/embed/d8W4SepxxVI',
+        watch: 'https://www.youtube.com/watch?v=d8W4SepxxVI'
+      },
+      {
+        embed: 'https://www.youtube.com/embed/6WiFDz6pntE',
+        watch: 'https://www.youtube.com/watch?v=6WiFDz6pntE'
+      }
+    ];
+
+    function selectTheoryVideo(idx) {
+      const video = THEORY_VIDEOS[idx];
+      if (!video) return;
+      document.getElementById('theory-video-iframe').src = video.embed;
+      document.getElementById('video-external-link').href = video.watch;
+
+      document.querySelectorAll('.vid-selector-btn').forEach((btn, i) => {
+        if (i === idx) {
+          btn.className = 'vid-selector-btn text-left p-3.5 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition';
+        } else {
+          btn.className = 'vid-selector-btn text-left p-3.5 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white transition';
+        }
+      });
+    }
+
+    function handleRealPhotoUpload(slotIndex, event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const dataUrl = e.target.result;
+        applyRealPhotoToSlot(slotIndex, dataUrl);
+        try {
+          const stored = JSON.parse(localStorage.getItem('icfes_conicas_real_photos') || '{}');
+          stored[slotIndex] = dataUrl;
+          localStorage.setItem('icfes_conicas_real_photos', JSON.stringify(stored));
+        } catch (err) {
+          showToast('Foto cargada en pantalla (muy pesada para memoria local).', 'warning');
+          return;
+        }
+        showToast('¡Fotografía real incrustada correctamente!', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function applyRealPhotoToSlot(slotIndex, dataUrl) {
+      const imgEl = document.getElementById(`real-img-${slotIndex}`);
+      const svgEl = document.getElementById(`real-svg-${slotIndex}`);
+      if (!imgEl || !svgEl) return;
+      imgEl.src = dataUrl;
+      imgEl.classList.remove('hidden');
+      svgEl.classList.add('hidden');
+    }
+
+    function loadSavedRealPhotos() {
+      try {
+        const stored = JSON.parse(localStorage.getItem('icfes_conicas_real_photos') || '{}');
+        [0, 1, 2].forEach(idx => {
+          if (stored[idx]) {
+            applyRealPhotoToSlot(idx, stored[idx]);
+          }
+        });
+      } catch (e) {}
+    }
+
+    function resetRealPhotos() {
+      try {
+        localStorage.removeItem('icfes_conicas_real_photos');
+      } catch (e) {}
+      [0, 1, 2].forEach(idx => {
+        const imgEl = document.getElementById(`real-img-${idx}`);
+        const svgEl = document.getElementById(`real-svg-${idx}`);
+        if (imgEl && svgEl) {
+          imgEl.src = '';
+          imgEl.classList.add('hidden');
+          svgEl.classList.remove('hidden');
+        }
+      });
+      showToast('Ilustraciones geométricas restauradas.', 'info');
+    }
+
+    // =========================================================================
     // INICIALIZACIÓN AL CARGAR LA PÁGINA
     // =========================================================================
     window.onload = function () {
       lucide.createIcons();
       updateHeaderGamification();
       setLabConic('circle');
+      loadSavedRealPhotos();
       startNewSession();
     };
   </script>
