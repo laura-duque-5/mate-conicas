@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICFES Master - Matemáticas y Secciones Cónicas</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX para renderizado matemático perfecto -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .katex { font-size: 1.08em; }
+    .tab-active {
+      background-color: #4f46e5;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    @keyframes pulse-border {
+      0%, 100% { border-color: #ef4444; }
+      50% { border-color: #fca5a5; }
+    }
+    .timer-alert {
+      animation: pulse-border 1.5s infinite;
+      background-color: #fef2f2 !important;
+      color: #dc2626 !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Barra Superior con Gamificación y Racha -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md">
+          <i data-lucide="compass" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight tracking-tight">ICFES <span class="text-indigo-600">CónicasPro</span></h1>
+          <p class="text-[11px] text-slate-500 font-medium hidden sm:block">Matemáticas Saber 11 • Geometría Analítica</p>
+        </div>
+      </div>
+
+      <!-- Indicadores de Gamificación -->
+      <div class="flex items-center gap-2 sm:gap-4">
+        <!-- Cola de Repaso Espaciado -->
+        <button onclick="switchTab('analytics')" title="Preguntas pendientes en repetición espaciada" class="flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition">
+          <i data-lucide="brain-circuit" class="w-4 h-4 text-amber-600"></i>
+          <span class="hidden md:inline">Repaso:</span>
+          <span id="header-review-count" class="bg-amber-600 text-white px-1.5 py-0.5 rounded-md text-[11px]">0</span>
+        </button>
+
+        <!-- Racha Diaria -->
+        <div class="flex items-center gap-1 bg-orange-50 text-orange-700 border border-orange-200 px-2.5 py-1.5 rounded-xl text-xs font-bold" title="Racha de estudio diario">
+          <i data-lucide="flame" class="w-4 h-4 text-orange-500 fill-orange-500"></i>
+          <span id="header-streak">3 días</span>
+        </div>
+
+        <!-- Puntos XP y Nivel -->
+        <div class="flex items-center gap-2 bg-indigo-50 text-indigo-800 border border-indigo-200 px-3 py-1.5 rounded-xl text-xs font-bold">
+          <i data-lucide="award" class="w-4 h-4 text-indigo-600"></i>
+          <div>
+            <span id="header-xp">150 XP</span>
+            <span class="hidden lg:inline text-indigo-500 font-normal"> • <span id="header-level">Aprendiz de Euclides</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegación por Pestañas -->
+    <nav class="bg-slate-50/80 border-t border-slate-200/80 overflow-x-auto">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-2 min-w-max">
+        <button id="tab-btn-exam" onclick="switchTab('exam')" class="tab-btn tab-active flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition">
+          <i data-lucide="file-check-2" class="w-4 h-4"></i>
+          <span>Simulacro ICFES</span>
+        </button>
+        <button id="tab-btn-lab" onclick="switchTab('lab')" class="tab-btn text-slate-600 hover:bg-slate-200/70 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition">
+          <i data-lucide="orbit" class="w-4 h-4"></i>
+          <span>Laboratorio de Cónicas</span>
+        </button>
+        <button id="tab-btn-duel" onclick="switchTab('duel')" class="tab-btn text-slate-600 hover:bg-slate-200/70 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition">
+          <i data-lucide="swords" class="w-4 h-4"></i>
+          <span>Duelo 1 vs 1</span>
+        </button>
+        <button id="tab-btn-analytics" onclick="switchTab('analytics')" class="tab-btn text-slate-600 hover:bg-slate-200/70 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition">
+          <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+          <span>Mi Analítica y Repaso</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Notificación Toast (Reemplazo elegante de alert) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Contenedor Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ===================================================================== -->
+    <!-- PESTAÑA 1: SIMULACRO ICFES Y PRÁCTICA GUIADA                          -->
+    <!-- ===================================================================== -->
+    <section id="view-exam" class="space-y-6">
+      
+      <!-- Panel de Configuración del Simulacro -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Selector de Modo -->
+          <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+            <button id="mode-guided-btn" onclick="setExamMode('guided')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-indigo-700 shadow-sm transition">
+              Práctica Guiada (Inmediata)
+            </button>
+            <button id="mode-simulacrum-btn" onclick="setExamMode('simulacrum')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition">
+              Modo Simulacro Real
+            </button>
+          </div>
+
+          <!-- Filtro de Subtema -->
+          <select id="topic-filter" onchange="startNewSession()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs sm:text-sm rounded-xl px-3 py-2 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="ALL">Todas las Cónicas (12 preguntas)</option>
+            <option value="Circunferencia">Solo Circunferencia</option>
+            <option value="Parábola">Solo Parábola</option>
+            <option value="Elipse">Solo Elipse</option>
+            <option value="Hipérbola">Solo Hipérbola</option>
+            <option value="REVIEW">Cola de Repaso Espaciado</option>
+          </select>
+
+          <button onclick="startNewSession()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-semibold transition" title="Mezclar preguntas y opciones">
+            <i data-lucide="shuffle" class="w-4 h-4"></i>
+            <span>Mezclar</span>
+          </button>
+        </div>
+
+        <!-- Relojes de Control ICFES -->
+        <div class="flex items-center gap-3 self-start lg:self-auto">
+          <!-- Cronómetro por pregunta (Alerta > 2 min = 120s) -->
+          <div id="question-timer-box" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 transition-colors">
+            <i data-lucide="timer" class="w-4 h-4"></i>
+            <div>
+              <div class="text-[10px] uppercase font-bold tracking-wider opacity-75">Tiempo Pregunta</div>
+              <div id="question-timer-display" class="font-mono font-bold text-sm">00:00 <span class="text-[10px] font-normal">/ 02:00</span></div>
+            </div>
+          </div>
+
+          <!-- Reloj General del Simulacro -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-800">
+            <i data-lucide="clock" class="w-4 h-4 text-indigo-600"></i>
+            <div>
+              <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Tiempo Total</div>
+              <div id="total-timer-display" class="font-mono font-bold text-sm">00:00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de Progreso de Preguntas -->
+      <div id="exam-workspace" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Columna Principal de la Pregunta -->
+        <div class="lg:col-span-8 space-y-5">
+          <div class="bg-white rounded-2xl p-5 sm:p-7 border border-slate-200 shadow-sm">
+            <!-- Metadatos ICFES -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-100">
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="q-number-badge" class="px-3 py-1 rounded-lg bg-indigo-600 text-white text-xs font-bold">Pregunta 1 de 12</span>
+                <span id="q-topic-badge" class="px-2.5 py-1 rounded-lg bg-violet-100 text-violet-800 text-xs font-semibold">Parábola</span>
+                <span id="q-competency-badge" class="px-2.5 py-1 rounded-lg bg-sky-100 text-sky-800 text-xs font-semibold">Formulación y ejecución</span>
+              </div>
+              <button onclick="openQuestionInLab()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                <span>Ver cónica en Laboratorio</span>
+              </button>
+            </div>
+
+            <!-- Enunciado de la Pregunta -->
+            <div id="q-context" class="text-slate-700 text-sm sm:text-base leading-relaxed mb-4 space-y-3"></div>
+            
+            <!-- Gráfico SVG auxiliar de la pregunta si aplica -->
+            <div id="q-diagram-container" class="hidden my-4 p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-center"></div>
+
+            <p id="q-prompt" class="font-semibold text-slate-900 text-sm sm:text-base mb-5"></p>
+
+            <!-- Opciones A, B, C, D -->
+            <div id="q-options" class="space-y-3"></div>
+
+            <!-- Retroalimentación Detallada por Competencias -->
+            <div id="q-feedback-panel" class="hidden mt-6 p-5 rounded-2xl border transition-all"></div>
+
+            <!-- Botones de Navegación -->
+            <div class="mt-6 pt-5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+              <button id="btn-prev-q" onclick="navigateQuestion(-1)" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-semibold disabled:opacity-40 transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Anterior</span>
+              </button>
+
+              <div class="flex items-center gap-2">
+                <button id="btn-finish-exam" onclick="finishSimulacrum()" class="hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-sm transition">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  <span>Finalizar y Calificar Simulacro</span>
+                </button>
+                <button id="btn-next-q" onclick="navigateQuestion(1)" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition">
+                  <span>Siguiente</span>
+                  <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Lateral: Mapa de Preguntas y Tip ICFES -->
+        <div class="lg:col-span-4 space-y-5">
+          <!-- Navegador Rápido -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
+              <span>Mapa del Cuadernillo</span>
+              <span id="answered-counter" class="text-xs font-semibold text-indigo-600">0/12 respondidas</span>
+            </h3>
+            <div id="question-grid-nav" class="grid grid-cols-6 gap-2"></div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-3 text-[11px] text-slate-500">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-indigo-600 inline-block"></span> Actual</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Correcta</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> Incorrecta</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-300 inline-block"></span> Respondida</span>
+            </div>
+          </div>
+
+          <!-- Guía Rápida de Cónicas ICFES -->
+          <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-2xl p-5 shadow-md">
+            <div class="flex items-center gap-2 text-indigo-300 text-xs font-bold uppercase tracking-wider mb-2">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span>Clave ICFES • Identificación Rápida</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              En la ecuación general $Ax^2 + Cy^2 + Dx + Ey + F = 0$:
+            </p>
+            <ul class="space-y-2 text-xs text-slate-200">
+              <li class="bg-white/10 p-2 rounded-lg"><strong class="text-emerald-300">Circunferencia:</strong> $A = C$ (mismo signo y valor).</li>
+              <li class="bg-white/10 p-2 rounded-lg"><strong class="text-sky-300">Parábola:</strong> $A = 0$ o $C = 0$ (solo una variable al cuadrado).</li>
+              <li class="bg-white/10 p-2 rounded-lg"><strong class="text-amber-300">Elipse:</strong> $A \neq C$ pero tienen el <strong>mismo signo</strong> ($A \cdot C > 0$).</li>
+              <li class="bg-white/10 p-2 rounded-lg"><strong class="text-rose-300">Hipérbola:</strong> $A$ y $C$ tienen <strong>signos opuestos</strong> ($A \cdot C < 0$).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pantalla de Resultados del Simulacro (Oculta hasta finalizar) -->
+      <div id="simulacrum-results-view" class="hidden bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+          <div>
+            <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase">Simulacro Completado</span>
+            <h2 class="text-2xl font-extrabold text-slate-900 mt-2">Informe de Desempeño ICFES</h2>
+            <p class="text-sm text-slate-500">Revisa tus aciertos, tiempo promedio y la retroalimentación de cada pregunta.</p>
+          </div>
+          <button onclick="startNewSession()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-sm transition">
+            Iniciar Nuevo Simulacro
+          </button>
+        </div>
+
+        <div id="results-summary-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        <div id="results-detailed-list" class="space-y-4"></div>
+      </div>
+
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- PESTAÑA 2: LABORATORIO INTERACTIVO DE CÓNICAS (CANVAS)                -->
+    <!-- ===================================================================== -->
+    <section id="view-lab" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Controles y Ecuaciones -->
+        <div class="lg:col-span-5 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-5">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="sliders" class="w-5 h-5 text-indigo-600"></i>
+              <span>Laboratorio Gráfico de Cónicas</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Modifica los parámetros para observar cómo cambian los focos, vértices y ecuaciones.</p>
+          </div>
+
+          <!-- Selector de Tipo de Cónica -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button onclick="setLabConic('circle')" id="lab-btn-circle" class="lab-conic-btn bg-indigo-600 text-white py-2 px-2 rounded-xl text-xs font-bold transition">Circunferencia</button>
+            <button onclick="setLabConic('parabola')" id="lab-btn-parabola" class="lab-conic-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 px-2 rounded-xl text-xs font-bold transition">Parábola</button>
+            <button onclick="setLabConic('ellipse')" id="lab-btn-ellipse" class="lab-conic-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 px-2 rounded-xl text-xs font-bold transition">Elipse</button>
+            <button onclick="setLabConic('hyperbola')" id="lab-btn-hyperbola" class="lab-conic-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 px-2 rounded-xl text-xs font-bold transition">Hipérbola</button>
+          </div>
+
+          <!-- Orientación (para Parábola, Elipse, Hipérbola) -->
+          <div id="lab-orientation-wrapper" class="hidden">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Eje Focal / Orientación</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="lab-orient-h" onclick="setLabOrientation('horizontal')" class="py-1.5 px-3 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">Horizontal (Eje X)</button>
+              <button id="lab-orient-v" onclick="setLabOrientation('vertical')" class="py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-50 text-slate-600 border border-slate-200">Vertical (Eje Y)</button>
+            </div>
+          </div>
+
+          <!-- Sliders Dinámicos -->
+          <div id="lab-sliders" class="space-y-4 pt-2 border-t border-slate-100"></div>
+
+          <!-- Ecuaciones Canónica y General -->
+          <div class="space-y-3 pt-3 border-t border-slate-100">
+            <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 mb-1">Ecuación Canónica</div>
+              <div id="lab-canonical-eq" class="text-sm font-semibold text-slate-900 overflow-x-auto"></div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Ecuación General Desarrollada</div>
+              <div id="lab-general-eq" class="text-sm font-semibold text-slate-800 overflow-x-auto"></div>
+            </div>
+          </div>
+
+          <!-- Elementos Geométricos Calculados -->
+          <div class="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200/80">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 mb-2">Elementos Clave (Evaluados en ICFES)</div>
+            <div id="lab-elements-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700"></div>
+          </div>
+        </div>
+
+        <!-- Plano Cartesiano en Canvas -->
+        <div class="lg:col-span-7 bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm flex flex-col">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3 text-xs font-medium text-slate-600">
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-indigo-600 inline-block"></span> Cónica</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> Focos ($F$)</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span> Vértices ($V$)</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> Centro ($C$)</span>
+            </div>
+            <button onclick="resetLabParams()" class="text-xs font-semibold text-slate-500 hover:text-indigo-600 flex items-center gap-1">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reiniciar
+            </button>
+          </div>
+          <div id="canvas-wrapper" class="relative w-full flex-1 min-h-[380px] sm:min-h-[480px] rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+            <canvas id="conic-canvas" class="w-full h-full block"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- PESTAÑA 3: DUELO 1 VS 1 RÁPIDO                                        -->
+    <!-- ===================================================================== -->
+    <section id="view-duel" class="hidden max-w-4xl mx-auto space-y-6">
+      <!-- Lobby del Duelo -->
+      <div id="duel-lobby" class="bg-white rounded-2xl p-6 sm:p-10 border border-slate-200 shadow-sm text-center space-y-5">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-orange-500 text-white flex items-center justify-center mx-auto shadow-lg">
+          <i data-lucide="swords" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-slate-900">Arena ICFES: Duelo 1 vs 1 de Cónicas</h2>
+        <p class="text-sm text-slate-600 max-w-lg mx-auto">
+          Enfréntate a un rival virtual en una carrera de <strong>5 preguntas tipo ICFES</strong>. Gana puntos extra por precisión y velocidad antes de que tu oponente complete el reto.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 pt-2">
+          <button onclick="startDuel('normal')" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md transition">
+            Retar a Sofía (Nivel Saber 11 - 340 pts)
+          </button>
+          <button onclick="startDuel('hard')" class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition">
+            Retar a Apolonio Bot (Nivel Élite - 430 pts)
+          </button>
+        </div>
+      </div>
+
+      <!-- Arena Activa del Duelo -->
+      <div id="duel-arena" class="hidden space-y-5">
+        <!-- Marcadores en Vivo -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Jugador -->
+            <div class="p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+              <div class="flex justify-between items-center text-xs font-bold text-indigo-900 mb-1.5">
+                <span>Tú (Estudiante)</span>
+                <span id="duel-player-score">0 pts</span>
+              </div>
+              <div class="w-full bg-indigo-200 rounded-full h-2.5">
+                <div id="duel-player-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+            <!-- Rival -->
+            <div class="p-3 rounded-xl bg-rose-50 border border-rose-200">
+              <div class="flex justify-between items-center text-xs font-bold text-rose-900 mb-1.5">
+                <span id="duel-bot-name">Rival</span>
+                <span id="duel-bot-score">0 pts</span>
+              </div>
+              <div class="w-full bg-rose-200 rounded-full h-2.5">
+                <div id="duel-bot-bar" class="bg-rose-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Pregunta del Duelo -->
+        <div id="duel-question-card" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <span id="duel-q-counter" class="text-xs font-bold text-indigo-600 uppercase">Ronda 1 de 5</span>
+            <span id="duel-q-topic" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">Elipse</span>
+          </div>
+          <p id="duel-q-text" class="text-sm sm:text-base font-medium text-slate-900 leading-relaxed"></p>
+          <div id="duel-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2"></div>
+        </div>
+
+        <!-- Resultado Final del Duelo -->
+        <div id="duel-result-card" class="hidden bg-white rounded-2xl p-8 border border-slate-200 shadow-sm text-center space-y-4">
+          <h3 id="duel-result-title" class="text-2xl font-extrabold text-slate-900"></h3>
+          <p id="duel-result-desc" class="text-sm text-slate-600"></p>
+          <button onclick="resetDuelLobby()" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition">
+            Volver a la Arena
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- PESTAÑA 4: ANALÍTICA, PUNTAJE PROYECTADO Y REPETICIÓN ESPACIADA       -->
+    <!-- ===================================================================== -->
+    <section id="view-analytics" class="hidden space-y-6">
+      
+      <!-- Tarjetas Superiores: Puntaje Proyectado ICFES -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl p-6 text-white shadow-md">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-200">Matemáticas ICFES Proyectado</span>
+            <i data-lucide="trending-up" class="w-5 h-5 text-indigo-200"></i>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span id="proj-math-score" class="text-4xl font-extrabold">68</span>
+            <span class="text-sm text-indigo-200 font-medium">/ 100 pts</span>
+          </div>
+          <p id="proj-math-level" class="text-xs text-indigo-100 mt-2">Nivel de Desempeño 3 • Buen dominio analítico</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Puntaje Global Estimado</span>
+            <i data-lucide="graduation-cap" class="w-5 h-5 text-emerald-600"></i>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span id="proj-global-score" class="text-4xl font-extrabold text-slate-900">342</span>
+            <span class="text-sm text-slate-500 font-medium">/ 500 pts</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">Basado en tu precisión y velocidad en Matemáticas</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Velocidad Promedio</span>
+            <i data-lucide="zap" class="w-5 h-5 text-amber-500"></i>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span id="analytics-avg-time" class="text-4xl font-extrabold text-slate-900">01:35</span>
+            <span class="text-sm text-slate-500 font-medium">min / preg</span>
+          </div>
+          <p class="text-xs text-emerald-600 font-medium mt-2">Meta ICFES: menos de 02:00 min por pregunta</p>
+        </div>
+      </div>
+
+      <!-- Mapa de Calor de Debilidades (Subtemas y Competencias) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Por Subtema de Cónicas -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="flame" class="w-5 h-5 text-rose-500"></i>
+              <span>Mapa de Calor por Sección Cónica</span>
+            </h3>
+          </div>
+          <div id="heatmap-topics" class="space-y-4"></div>
+          <div id="study-recommendation-box" class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900"></div>
+        </div>
+
+        <!-- Por Competencia ICFES -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="target" class="w-5 h-5 text-indigo-600"></i>
+            <span>Dominio por Competencia ICFES</span>
+          </h3>
+          <div id="heatmap-competencies" class="space-y-4"></div>
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 leading-relaxed">
+            <strong>Recuerda:</strong> En Matemáticas Saber 11, <em>Formulación y ejecución</em> representa cerca del 43% del examen, mientras que <em>Interpretación</em> y <em>Argumentación</em> completan el 57%.
+          </div>
+        </div>
+      </div>
+
+      <!-- Cola de Repetición Espaciada (Preguntas Falladas) -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="brain-circuit" class="w-5 h-5 text-amber-600"></i>
+              <span>Cola de Repetición Espaciada (Algoritmo Anti-Olvido)</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">Las preguntas que fallas se programan automáticamente aquí hasta que las domines correctamente.</p>
+          </div>
+          <button onclick="practiceSpacedRepetition()" id="btn-practice-review" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-bold shadow-sm transition disabled:opacity-40">
+            Practicar Cola de Repaso Ahora
+          </button>
+        </div>
+
+        <div id="spaced-repetition-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ======================================================================= -->
+  <!-- JAVASCRIPT DE LA APLICACIÓN                                             -->
+  <!-- ======================================================================= -->
+  <script>
+    // =========================================================================
+    // 1. BANCO DE PREGUNTAS TIPO ICFES SABER 11 (12 PREGUNTAS RIGUROSAS)
+    // =========================================================================
+    const QUESTION_BANK = [
+      {
+        id: 'c1',
+        topic: 'Circunferencia',
+        competency: 'Interpretación y representación',
+        context: 'En el diseño de un parque circular, un arquitecto ubica el centro de una fuente en el punto $C(-3, 4)$ del plano cartesiano y determina que el borde exterior de la fuente debe pasar exactamente por el punto $P(1, 1)$ (medido en metros).',
+        prompt: '¿Cuál es la ecuación canónica que representa el borde exterior de la fuente?',
+        options: [
+          { text: '$(x + 3)^2 + (y - 4)^2 = 25$', isCorrect: true, trap: '' },
+          { text: '$(x - 3)^2 + (y + 4)^2 = 25$', isCorrect: false, trap: 'Error de signos en el centro $(h, k)$: la fórmula es $(x - h)^2 + (y - k)^2 = r^2$, por lo que $x - (-3) = x + 3$.' },
+          { text: '$(x + 3)^2 + (y - 4)^2 = 5$', isCorrect: false, trap: 'Olvidaste elevar el radio al cuadrado ($r^2 = 5^2 = 25$).' },
+          { text: '$(x + 3)^2 + (y - 4)^2 = 7$', isCorrect: false, trap: 'Sumaste las diferencias $|1 - (-3)| + |1 - 4| = 4 + 3 = 7$ en lugar de aplicar el teorema de Pitágoras.' }
+        ],
+        explanation: '<strong>Paso 1:</strong> Calculamos el radio al cuadrado usando la distancia entre $C(-3,4)$ y $P(1,1)$:<br>$r^2 = (1 - (-3))^2 + (1 - 4)^2 = 4^2 + (-3)^2 = 16 + 9 = 25$.<br><strong>Paso 2:</strong> Sustituimos $h = -3$, $k = 4$ y $r^2 = 25$ en $(x - h)^2 + (y - k)^2 = r^2$, obteniendo $(x + 3)^2 + (y - 4)^2 = 25$.',
+        labPreset: { type: 'circle', h: -3, k: 4, r: 5 }
+      },
+      {
+        id: 'c2',
+        topic: 'Circunferencia',
+        competency: 'Formulación y ejecución',
+        context: 'Un radar meteorológico cubre una región descrita por la ecuación general $x^2 + y^2 - 6x + 8y - 11 = 0$, donde las coordenadas están dadas en kilómetros.',
+        prompt: 'Si una aeronave vuela en línea recta pasando por el centro de cobertura del radar, ¿cuál es el área total de la región monitoreada por el radar?',
+        options: [
+          { text: '$36\\pi\\text{ km}^2$', isCorrect: true, trap: '' },
+          { text: '$11\\pi\\text{ km}^2$', isCorrect: false, trap: 'Tomaste el término independiente $11$ directamente como $r^2$ sin completar cuadrados.' },
+          { text: '$6\\pi\\text{ km}^2$', isCorrect: false, trap: 'Calculaste $r = 6$, pero olvidaste elevarlo al cuadrado en la fórmula del área $A = \\pi r^2$.' },
+          { text: '$14\\pi\\text{ km}^2$', isCorrect: false, trap: 'Error al completar cuadrados: restaste en lugar de sumar $(6/2)^2$ y $(8/2)^2$ al lado derecho.' }
+        ],
+        explanation: '<strong>Paso 1 (Completar cuadrados):</strong><br>$(x^2 - 6x + 9) + (y^2 + 8y + 16) = 11 + 9 + 16$<br>$(x - 3)^2 + (y + 4)^2 = 36$.<br><strong>Paso 2:</strong> Identificamos que $r^2 = 36$ (es decir, $r = 6\\text{ km}$).<br><strong>Paso 3:</strong> El área del círculo es $A = \\pi r^2 = 36\\pi\\text{ km}^2$.',
+        labPreset: { type: 'circle', h: 3, k: -4, r: 6 }
+      },
+      {
+        id: 'c3',
+        topic: 'Circunferencia',
+        competency: 'Argumentación',
+        context: 'Un estudiante afirma que la ecuación $2x^2 + 2y^2 - 4x + 12y + 26 = 0$ representa una circunferencia real de radio $r = \\sqrt{3}$ en el plano cartesiano.',
+        prompt: '¿Es correcta la afirmación del estudiante?',
+        options: [
+          { text: 'No, porque al completar cuadrados se obtiene $(x - 1)^2 + (y + 3)^2 = -3$, y un radio al cuadrado no puede ser negativo.', isCorrect: true, trap: '' },
+          { text: 'Sí, porque los coeficientes de $x^2$ y $y^2$ son iguales y positivos ($A = C = 2$).', isCorrect: false, trap: 'Condición necesaria pero no suficiente: también debe cumplirse que $r^2 > 0$.' },
+          { text: 'No, porque los coeficientes de $x^2$ y $y^2$ deben ser exactamente iguales a $1$ para ser circunferencia.', isCorrect: false, trap: 'Falso: basta con dividir toda la ecuación entre $2$.' },
+          { text: 'Sí, porque al dividir entre $2$ el término independiente queda $13$, y $1 + 9 - 13 = -3$, cuyo valor absoluto es $3$.', isCorrect: false, trap: 'El radio al cuadrado no admite valor absoluto; indica que es un lugar geométrico vacío.' }
+        ],
+        explanation: 'Al dividir toda la ecuación entre $2$ se obtiene: $x^2 + y^2 - 2x + 6y + 13 = 0$.<br>Completando cuadrados: $(x^2 - 2x + 1) + (y^2 + 6y + 9) = -13 + 1 + 9 \\Rightarrow (x - 1)^2 + (y + 3)^2 = -3$.<br>Como la suma de dos cuadrados reales nunca puede ser negativa ($r^2 = -3 < 0$), no representa ninguna circunferencia en el plano real.',
+        labPreset: { type: 'circle', h: 1, k: -3, r: 2 }
+      },
+      {
+        id: 'p1',
+        topic: 'Parábola',
+        competency: 'Formulación y ejecución',
+        context: 'Una antena parabólica para recepción satelital tiene su vértice en el origen $(0,0)$ y su eje de simetría coincide con el eje $y$ positivo. Si el diámetro de la antena en su borde superior es de $4\\text{ metros}$ y su profundidad es de $1\\text{ metro}$, el receptor (foco) debe ubicarse exactamente en el foco de la parábola para maximizar la señal.',
+        prompt: '¿A qué distancia del vértice debe instalarse el receptor de la antena?',
+        options: [
+          { text: 'A $1\\text{ metro}$ del vértice.', isCorrect: true, trap: '' },
+          { text: 'A $4\\text{ metros}$ del vértice.', isCorrect: false, trap: 'Confundiste el lado recto ($4p = 4$) con el parámetro focal $p$.' },
+          { text: 'A $0.5\\text{ metros}$ del vértice.', isCorrect: false, trap: 'Usaste el diámetro completo ($x = 4$) en lugar del radio ($x = 2$) al sustituir en $x^2 = 4py$.' },
+          { text: 'A $2\\text{ metros}$ del vértice.', isCorrect: false, trap: 'Tomaste la mitad del diámetro como distancia focal.' }
+        ],
+        explanation: '<strong>Paso 1:</strong> La ecuación de la parábola vertical con vértice en $(0,0)$ es $x^2 = 4py$.<br><strong>Paso 2:</strong> Como el diámetro es $4\\text{ m}$, el borde superior pasa por el punto $(2, 1)$ (mitad del diámetro en $x$, profundidad en $y$).<br><strong>Paso 3:</strong> Sustituimos: $2^2 = 4p(1) \\Rightarrow 4 = 4p \\Rightarrow p = 1\\text{ metro}$.',
+        diagram: `<svg viewBox="0 0 260 150" class="w-64 h-36">
+          <line x1="20" y1="125" x2="240" y2="125" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="130" y1="10" x2="130" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+          <path d="M 50 45 Q 130 205 210 45" fill="none" stroke="#4f46e5" stroke-width="3"/>
+          <line x1="50" y1="45" x2="210" y2="45" stroke="#0ea5e9" stroke-dasharray="4" stroke-width="1.5"/>
+          <circle cx="130" cy="85" r="4.5" fill="#e11d48"/>
+          <text x="138" y="88" font-size="11" fill="#e11d48" font-weight="bold">Foco (0, p)</text>
+          <text x="145" y="38" font-size="11" fill="#0284c7" font-weight="bold">Diámetro = 4 m</text>
+          <text x="135" y="138" font-size="10" fill="#475569">V(0,0)</text>
+        </svg>`,
+        labPreset: { type: 'parabola', orientation: 'vertical', h: 0, k: 0, p: 1 }
+      },
+      {
+        id: 'p2',
+        topic: 'Parábola',
+        competency: 'Interpretación y representación',
+        context: 'La trayectoria de un proyectil lanzado desde una plataforma está modelada por la ecuación $(x - 4)^2 = -8(y - 6)$, donde $x$ representa la distancia horizontal y $y$ la altura en metros.',
+        prompt: '¿Cuáles son las coordenadas del vértice (punto de altura máxima) y del foco de esta parábola?',
+        options: [
+          { text: 'Vértice $V(4, 6)$ y Foco $F(4, 4)$', isCorrect: true, trap: '' },
+          { text: 'Vértice $V(4, 6)$ y Foco $F(4, 8)$', isCorrect: false, trap: 'Sumaste $p = 2$ a la coordenada $y$ del vértice, ignorando el signo negativo que indica que la parábola abre hacia abajo.' },
+          { text: 'Vértice $V(-4, -6)$ y Foco $F(-4, -8)$', isCorrect: false, trap: 'Invertiste los signos de $h$ y $k$ al extraerlos de la ecuación canónica.' },
+          { text: 'Vértice $V(4, 6)$ y Foco $F(2, 6)$', isCorrect: false, trap: 'Desplazaste el foco horizontalmente en lugar de hacerlo sobre el eje de simetría vertical.' }
+        ],
+        explanation: '<strong>Paso 1:</strong> Comparamos con $(x - h)^2 = 4p(y - k)$. El vértice es $V(h, k) = V(4, 6)$.<br><strong>Paso 2:</strong> Hallamos $p$: $4p = -8 \\Rightarrow p = -2$.<br><strong>Paso 3:</strong> Como $x$ está al cuadrado y $p < 0$, la parábola abre hacia abajo. El foco está $2$ unidades debajo del vértice: $F(4, 6 - 2) = F(4, 4)$.',
+        labPreset: { type: 'parabola', orientation: 'vertical', h: 4, k: 6, p: -2 }
+      },
+      {
+        id: 'p3',
+        topic: 'Parábola',
+        competency: 'Argumentación',
+        context: 'Un puente colgante tiene sus cables principales en forma parabólica. Dos torres de soporte están separadas por $120\\text{ m}$ y tienen una altura de $30\\text{ m}$ sobre la calzada. El punto más bajo del cable toca la calzada justo en el punto medio entre las torres.',
+        prompt: 'Un ingeniero sostiene que a $30\\text{ m}$ del centro del puente, la altura del cable es de $15\\text{ m}$ (la mitad de la altura de la torre). ¿Por qué es incorrecto este razonamiento?',
+        options: [
+          { text: 'Porque la relación entre altura y distancia horizontal es cuadrática ($y = kx^2$), por lo que a la mitad de la distancia ($x=30$) la altura es un cuarto ($7.5\\text{ m}$).', isCorrect: true, trap: '' },
+          { text: 'Porque en una parábola la altura crece exponencialmente y a $30\\text{ m}$ debería medir $22.5\\text{ m}$.', isCorrect: false, trap: 'Confusión entre crecimiento cuadrático y exponencial.' },
+          { text: 'Porque la ecuación del cable es $y^2 = 120x$, lo que da una altura de $60\\text{ m}$.', isCorrect: false, trap: 'Eje focal equivocado: el cable abre hacia arriba, por lo que $x$ es la variable cuadrática.' },
+          { text: 'El razonamiento del ingeniero sí es correcto debido a la simetría de la parábola.', isCorrect: false, trap: 'La simetría implica que $f(-30) = f(30)$, no que la función sea lineal.' }
+        ],
+        explanation: 'Ubicando el vértice en $(0,0)$, la ecuación es $x^2 = 4py$. La torre está en $(60, 30)$, luego $60^2 = 4p(30) \\Rightarrow 3600 = 120p \\Rightarrow 4p = 120$.<br>Para $x = 30$: $30^2 = 120y \\Rightarrow 900 = 120y \\Rightarrow y = 7.5\\text{ m}$. Al reducir $x$ a la mitad, $y$ se reduce a la cuarta parte ($(1/2)^2 = 1/4$).',
+        labPreset: { type: 'parabola', orientation: 'vertical', h: 0, k: 0, p: 5 }
+      },
+      {
+        id: 'e1',
+        topic: 'Elipse',
+        competency: 'Formulación y ejecución',
+        context: 'Una pista de atletismo tiene forma de elipse horizontal centrada en el origen. Su longitud máxima de extremo a extremo (eje mayor) es de $100\\text{ metros}$ y su ancho máximo (eje menor) es de $60\\text{ metros}$.',
+        prompt: '¿A qué distancia del centro de la pista se encuentran ubicados los dos focos de la elipse?',
+        options: [
+          { text: 'A $40\\text{ metros}$', isCorrect: true, trap: '' },
+          { text: 'A $80\\text{ metros}$', isCorrect: false, trap: 'Calculaste la distancia entre los dos focos ($2c = 80$) en lugar de la distancia desde el centro ($c$).' },
+          { text: 'A $\\sqrt{3400}\\text{ metros}$', isCorrect: false, trap: 'Sumaste $a^2 + b^2$ (fórmula de la hipérbola) en lugar de restar $a^2 - b^2$.' },
+          { text: 'A $20\\text{ metros}$', isCorrect: false, trap: 'Restaste directamente $a - b = 50 - 30 = 20$ sin elevar al cuadrado.' }
+        ],
+        explanation: '<strong>Paso 1:</strong> El eje mayor es $2a = 100 \\Rightarrow a = 50$. El eje menor es $2b = 60 \\Rightarrow b = 30$.<br><strong>Paso 2:</strong> En toda elipse se cumple $a^2 = b^2 + c^2$, por lo tanto:<br>$c = \\sqrt{a^2 - b^2} = \\sqrt{50^2 - 30^2} = \\sqrt{2500 - 900} = \\sqrt{1600} = 40\\text{ metros}$.',
+        labPreset: { type: 'ellipse', orientation: 'horizontal', h: 0, k: 0, a: 5, b: 3 }
+      },
+      {
+        id: 'e2',
+        topic: 'Elipse',
+        competency: 'Interpretación y representación',
+        context: 'Dada la ecuación de una elipse trasladada: $\\frac{(x - 2)^2}{9} + \\frac{(y + 1)^2}{25} = 1$.',
+        prompt: '¿Cuáles son las coordenadas de sus vértices principales (extremos del eje mayor)?',
+        options: [
+          { text: '$(2, 4)$ y $(2, -6)$', isCorrect: true, trap: '' },
+          { text: '$(5, -1)$ y $(-1, -1)$', isCorrect: false, trap: 'Sumaste y restaste $b = 3$ sobre el eje horizontal, obteniendo los covértices en lugar de los vértices mayores.' },
+          { text: '$(2, 24)$ y $(2, -26)$', isCorrect: false, trap: 'Usaste $a^2 = 25$ en lugar de $a = 5$ para desplazar desde el centro.' },
+          { text: '$(-2, 6)$ y $(-2, -4)$', isCorrect: false, trap: 'Invertiste los signos del centro $(h, k)$.' }
+        ],
+        explanation: '<strong>Paso 1:</strong> El denominador mayor ($25$) está debajo de $(y + 1)^2$, por lo que es una elipse <strong>vertical</strong> con centro $C(2, -1)$ y $a = \\sqrt{25} = 5$.<br><strong>Paso 2:</strong> Los vértices principales están $5$ unidades arriba y abajo del centro:<br>$V_1(2, -1 + 5) = (2, 4)$ y $V_2(2, -1 - 5) = (2, -6)$.',
+        labPreset: { type: 'ellipse', orientation: 'vertical', h: 2, k: -1, a: 5, b: 3 }
+      },
+      {
+        id: 'e3',
+        topic: 'Elipse',
+        competency: 'Argumentación',
+        context: 'En astronomía, la excentricidad $e = \\frac{c}{a}$ mide qué tan alargada es la órbita elíptica de un planeta alrededor del Sol (ubicado en uno de los focos). La órbita de la Tierra tiene $e \\approx 0.017$, mientras que la del cometa Halley tiene $e \\approx 0.967$.',
+        prompt: '¿Qué conclusión geométrica válida se deduce al comparar ambas órbitas?',
+        options: [
+          { text: 'La órbita de la Tierra es casi una circunferencia perfecta porque sus focos están muy cerca del centro ($c \\approx 0$), mientras que la del cometa Halley es muy alargada.', isCorrect: true, trap: '' },
+          { text: 'El Sol está ubicado exactamente en el centro geométrico de la órbita de la Tierra.', isCorrect: false, trap: 'Por la Primera Ley de Kepler, el Sol está en uno de los focos, no en el centro (aunque estén muy cerca).' },
+          { text: 'En la órbita del cometa Halley, el semieje menor $b$ es mayor que el semieje mayor $a$.', isCorrect: false, trap: 'En toda elipse siempre se cumple $a > b$.' },
+          { text: 'Si $e$ llegara a valer exactamente $1$, la órbita seguiría siendo una elipse cerrada.', isCorrect: false, trap: 'Cuando $e = 1$, la cónica degenera en una parábola (trayectoria abierta).' }
+        ],
+        explanation: 'En una elipse, $0 \\le e < 1$. Cuando $e \\to 0$, $c \\to 0$, lo que significa que los dos focos se juntan en el centro y $a \\approx b$ (una circunferencia). Cuando $e \\to 1$, $c$ se acerca mucho a $a$, haciendo que $b = \\sqrt{a^2 - c^2}$ sea muy pequeño y la elipse sea muy estrecha y alargada.',
+        labPreset: { type: 'ellipse', orientation: 'horizontal', h: 0, k: 0, a: 6, b: 2 }
+      },
+      {
+        id: 'h1',
+        topic: 'Hipérbola',
+        competency: 'Interpretación y representación',
+        context: 'Una torre de enfriamiento de una planta eléctrica tiene un perfil lateral modelado por la hipérbola $\\frac{x^2}{16} - \\frac{y^2}{9} = 1$.',
+        prompt: '¿Cuáles son las ecuaciones de las dos rectas asíntotas que guían las ramas de esta hipérbola?',
+        options: [
+          { text: '$y = \\pm \\frac{3}{4}x$', isCorrect: true, trap: '' },
+          { text: '$y = \\pm \\frac{4}{3}x$', isCorrect: false, trap: 'Invertiste la pendiente: para una hipérbola horizontal, la pendiente es $\\pm \\frac{b}{a}$, no $\\pm \\frac{a}{b}$.' },
+          { text: '$y = \\pm \\frac{9}{16}x$', isCorrect: false, trap: 'Usaste $b^2$ y $a^2$ sin extraer sus raíces cuadradas.' },
+          { text: '$y = \\pm \\frac{5}{4}x$', isCorrect: false, trap: 'Usaste $c = 5$ en el numerador en lugar de $b = 3$.' }
+        ],
+        explanation: '<strong>Paso 1:</strong> Como el término positivo es $x^2$, es una hipérbola horizontal centrada en $(0,0)$ con $a^2 = 16 \\Rightarrow a = 4$ y $b^2 = 9 \\Rightarrow b = 3$.<br><strong>Paso 2:</strong> Las asíntotas de una hipérbola horizontal en el origen tienen pendiente $m = \\pm \\frac{b}{a} = \\pm \\frac{3}{4}$, es decir, $y = \\pm \\frac{3}{4}x$.',
+        labPreset: { type: 'hyperbola', orientation: 'horizontal', h: 0, k: 0, a: 4, b: 3 }
+      },
+      {
+        id: 'h2',
+        topic: 'Hipérbola',
+        competency: 'Formulación y ejecución',
+        context: 'En un sistema de navegación LORAN, dos estaciones de radio $F_1(0, 5)$ y $F_2(0, -5)$ emiten señales simultáneas. Un barco detecta que la diferencia de distancias hacia ambas estaciones es constante e igual a $6\\text{ km}$.',
+        prompt: '¿Cuál es la ecuación canónica de la hipérbola sobre la cual se encuentra ubicado el barco?',
+        options: [
+          { text: '$\\frac{y^2}{9} - \\frac{x^2}{16} = 1$', isCorrect: true, trap: '' },
+          { text: '$\\frac{x^2}{9} - \\frac{y^2}{16} = 1$', isCorrect: false, trap: 'Como los focos están en $(0, \\pm 5)$ sobre el eje $y$, el término positivo debe ser $y^2$.' },
+          { text: '$\\frac{y^2}{9} - \\frac{x^2}{25} = 1$', isCorrect: false, trap: 'Colocaste $c^2 = 25$ en el denominador en lugar de $b^2 = c^2 - a^2 = 16$.' },
+          { text: '$\\frac{y^2}{36} - \\frac{x^2}{16} = 1$', isCorrect: false, trap: 'Usaste $2a = 6$ como $a$, elevando $6^2 = 36$ en lugar de $a = 3 \\Rightarrow a^2 = 9$.' }
+        ],
+        explanation: '<strong>Paso 1:</strong> Los focos $(0, \\pm 5)$ están sobre el eje $y$, luego $c = 5$ y la hipérbola es vertical.<br><strong>Paso 2:</strong> Por definición de hipérbola, la diferencia constante de distancias es $2a = 6 \\Rightarrow a = 3$.<br><strong>Paso 3:</strong> Calculamos $b^2 = c^2 - a^2 = 25 - 9 = 16$. La ecuación es $\\frac{y^2}{9} - \\frac{x^2}{16} = 1$.',
+        labPreset: { type: 'hyperbola', orientation: 'vertical', h: 0, k: 0, a: 3, b: 4 }
+      },
+      {
+        id: 'h3',
+        topic: 'Hipérbola',
+        competency: 'Argumentación',
+        context: 'Se presenta la ecuación general $4x^2 - 9y^2 - 16x - 18y - 29 = 0$.',
+        prompt: 'Sin necesidad de graficarla, ¿qué característica garantiza que esta ecuación corresponde a una hipérbola y no a una elipse?',
+        options: [
+          { text: 'Los coeficientes de los términos cuadráticos $x^2$ y $y^2$ tienen signos opuestos ($+4$ y $-9$).', isCorrect: true, trap: '' },
+          { text: 'El término independiente ($-29$) es negativo.', isCorrect: false, trap: 'Al completar cuadrados el lado derecho puede cambiar de signo; no define el tipo de cónica.' },
+          { text: 'Los valores absolutos de los coeficientes de $x^2$ y $y^2$ son diferentes ($4 \\neq 9$).', isCorrect: false, trap: 'En una elipse también son diferentes, pero tienen el mismo signo.' },
+          { text: 'Existen términos lineales tanto en $x$ ($-16x$) como en $y$ ($-18y$).', isCorrect: false, trap: 'Los términos lineales solo indican que la cónica está trasladada fuera del origen.' }
+        ],
+        explanation: 'En la ecuación general $Ax^2 + Cy^2 + Dx + Ey + F = 0$, el discriminante de clasificación indica que si $A \\cdot C < 0$ (signos opuestos en los términos cuadráticos), la curva es una <strong>hipérbola</strong> (o dos rectas que se cortan si degenera). Aquí $4 \\cdot (-9) = -36 < 0$.',
+        labPreset: { type: 'hyperbola', orientation: 'horizontal', h: 2, k: -1, a: 3, b: 2 }
+      }
+    ];
+
+    // =========================================================================
+    // 2. ESTADO GLOBAL DE LA APLICACIÓN (CON PERSISTENCIA EN LOCALSTORAGE)
+    // =========================================================================
+    let appState = {
+      xp: 150,
+      streak: 3,
+      reviewQueue: [], // IDs de preguntas falladas pendientes de dominio
+      statsByTopic: {
+        'Circunferencia': { correct: 2, total: 3 },
+        'Parábola': { correct: 1, total: 3 },
+        'Elipse': { correct: 2, total: 2 },
+        'Hipérbola': { correct: 1, total: 3 }
+      },
+      statsByCompetency: {
+        'Interpretación y representación': { correct: 2, total: 3 },
+        'Formulación y ejecución': { correct: 2, total: 4 },
+        'Argumentación': { correct: 2, total: 4 }
+      },
+      totalTimeSpent: 285,
+      totalQuestionsAnswered: 3
+    };
+
+    // Cargar estado guardado si existe
+    try {
+      const saved = localStorage.getItem('icfes_conicas_state_v1');
+      if (saved) {
+        appState = { ...appState, ...JSON.parse(saved) };
+      }
+    } catch (e) { console.warn('No se pudo leer localStorage'); }
+
+    function saveState() {
+      try {
+        localStorage.setItem('icfes_conicas_state_v1', JSON.stringify(appState));
+      } catch (e) {}
+      updateHeaderGamification();
+    }
+
+    // Estado de la Sesión de Simulacro Actual
+    let session = {
+      mode: 'guided', // 'guided' | 'simulacrum'
+      questions: [],
+      currentIndex: 0,
+      userAnswers: {}, // { questionId: selectedOptionIndex }
+      questionTimes: {}, // { questionId: seconds }
+      totalSeconds: 0,
+      currentQuestionSeconds: 0,
+      timerInterval: null,
+      finished: false
+    };
+
+    // =========================================================================
+    // 3. UTILIDADES (KATEX, TOASTS, ALEATORIEDAD)
+    // =========================================================================
+    function renderMath(element = document.body) {
+      if (window.renderMathInElement) {
+        renderMathInElement(element, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colors = {
+        success: 'bg-emerald-600 text-white',
+        warning: 'bg-amber-600 text-white',
+        error: 'bg-rose-600 text-white',
+        info: 'bg-slate-900 text-white'
+      };
+      toast.className = `${colors[type] || colors.info} px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all transform translate-y-2 opacity-0`;
+      toast.innerHTML = `<span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+      setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    // =========================================================================
+    // 4. NAVEGACIÓN Y GAMIFICACIÓN
+    // =========================================================================
+    function switchTab(tabName) {
+      ['exam', 'lab', 'duel', 'analytics'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+        const btn = document.getElementById(`tab-btn-${t}`);
+        btn.classList.remove('tab-active');
+        btn.classList.add('text-slate-600', 'hover:bg-slate-200/70');
+      });
+      document.getElementById(`view-${tabName}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+      activeBtn.classList.add('tab-active');
+      activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-200/70');
+
+      if (tabName === 'lab') {
+        setTimeout(resizeAndDrawCanvas, 50);
+      } else if (tabName === 'analytics') {
+        renderAnalyticsDashboard();
+      }
+      renderMath();
+    }
+
+    function updateHeaderGamification() {
+      document.getElementById('header-xp').textContent = `${appState.xp} XP`;
+      document.getElementById('header-streak').textContent = `${appState.streak} días`;
+      document.getElementById('header-review-count').textContent = appState.reviewQueue.length;
+
+      let levelName = 'Aprendiz de Euclides';
+      if (appState.xp >= 600) levelName = 'Maestro de Apolonio';
+      else if (appState.xp >= 350) levelName = 'Analista Saber 11';
+      else if (appState.xp >= 200) levelName = 'Explorador Geométrico';
+      document.getElementById('header-level').textContent = levelName;
+    }
+
+    // =========================================================================
+    // 5. LÓGICA DEL SIMULACRO ICFES Y PRÁCTICA GUIADA
+    // =========================================================================
+    function setExamMode(mode) {
+      session.mode = mode;
+      const gBtn = document.getElementById('mode-guided-btn');
+      const sBtn = document.getElementById('mode-simulacrum-btn');
+      if (mode === 'guided') {
+        gBtn.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-indigo-700 shadow-sm transition';
+        sBtn.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition';
+        showToast('Modo Práctica Guiada: verás la explicación al instante.', 'info');
+      } else {
+        sBtn.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-indigo-700 shadow-sm transition';
+        gBtn.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition';
+        showToast('Modo Simulacro Real: sin pistas hasta finalizar.', 'warning');
+      }
+      startNewSession();
+    }
+
+    function startNewSession() {
+      const filter = document.getElementById('topic-filter').value;
+      let pool = [];
+
+      if (filter === 'REVIEW') {
+        pool = QUESTION_BANK.filter(q => appState.reviewQueue.includes(q.id));
+        if (pool.length === 0) {
+          showToast('¡Excelente! No tienes preguntas pendientes en tu cola de repaso.', 'success');
+          document.getElementById('topic-filter').value = 'ALL';
+          pool = [...QUESTION_BANK];
+        }
+      } else if (filter === 'ALL') {
+        pool = [...QUESTION_BANK];
+      } else {
+        pool = QUESTION_BANK.filter(q => q.topic === filter);
+      }
+
+      // Mezclar preguntas y mezclar opciones A, B, C, D de cada pregunta
+      session.questions = shuffleArray(pool).map(q => ({
+        ...q,
+        shuffledOptions: shuffleArray(q.options)
+      }));
+      session.currentIndex = 0;
+      session.userAnswers = {};
+      session.questionTimes = {};
+      session.totalSeconds = 0;
+      session.currentQuestionSeconds = 0;
+      session.finished = false;
+
+      document.getElementById('exam-workspace').classList.remove('hidden');
+      document.getElementById('simulacrum-results-view').classList.add('hidden');
+
+      startTimers();
+      renderCurrentQuestion();
+    }
+
+    function startTimers() {
+      if (session.timerInterval) clearInterval(session.timerInterval);
+      session.timerInterval = setInterval(() => {
+        if (session.finished) return;
+        session.totalSeconds++;
+        session.currentQuestionSeconds++;
+
+        const currentQ = session.questions[session.currentIndex];
+        if (currentQ) {
+          session.questionTimes[currentQ.id] = (session.questionTimes[currentQ.id] || 0) + 1;
+        }
+
+        document.getElementById('total-timer-display').textContent = formatTime(session.totalSeconds);
+        const qTime = currentQ ? (session.questionTimes[currentQ.id] || 0) : 0;
+        document.getElementById('question-timer-display').innerHTML = `${formatTime(qTime)} <span class="text-[10px] font-normal">/ 02:00</span>`;
+
+        // Alerta visual si supera los 2 minutos (120 segundos) recomendados por el ICFES
+        const timerBox = document.getElementById('question-timer-box');
+        if (qTime > 120) {
+          timerBox.classList.add('timer-alert');
+          timerBox.classList.remove('bg-emerald-50', 'border-emerald-200', 'text-emerald-800');
+        } else {
+          timerBox.classList.remove('timer-alert');
+          timerBox.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-800');
+        }
+      }, 1000);
+    }
+
+    function renderCurrentQuestion() {
+      const q = session.questions[session.currentIndex];
+      if (!q) return;
+
+      const total = session.questions.length;
+      document.getElementById('q-number-badge').textContent = `Pregunta ${session.currentIndex + 1} de ${total}`;
+      document.getElementById('q-topic-badge').textContent = q.topic;
+      document.getElementById('q-competency-badge').textContent = q.competency;
+      document.getElementById('q-context').innerHTML = q.context;
+      document.getElementById('q-prompt').innerHTML = q.prompt;
+
+      // Diagrama SVG opcional
+      const diagContainer = document.getElementById('q-diagram-container');
+      if (q.diagram) {
+        diagContainer.innerHTML = q.diagram;
+        diagContainer.classList.remove('hidden');
+      } else {
+        diagContainer.classList.add('hidden');
+        diagContainer.innerHTML = '';
+      }
+
+      // Renderizar opciones A, B, C, D
+      const optionsContainer = document.getElementById('q-options');
+      optionsContainer.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      const chosenIdx = session.userAnswers[q.id];
+      const hasAnswered = chosenIdx !== undefined;
+      const showImmediateFeedback = hasAnswered && session.mode === 'guided';
+
+      q.shuffledOptions.forEach((opt, idx) => {
+        const isSelected = chosenIdx === idx;
+        let btnStyle = 'border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/40 bg-white';
+        let badgeStyle = 'bg-slate-100 text-slate-700';
+
+        if (showImmediateFeedback) {
+          if (opt.isCorrect) {
+            btnStyle = 'border-emerald-500 bg-emerald-50/80 ring-1 ring-emerald-500';
+            badgeStyle = 'bg-emerald-600 text-white';
+          } else if (isSelected && !opt.isCorrect) {
+            btnStyle = 'border-rose-500 bg-rose-50/80 ring-1 ring-rose-500';
+            badgeStyle = 'bg-rose-600 text-white';
+          } else {
+            btnStyle = 'border-slate-200 opacity-65 bg-white';
+          }
+        } else if (isSelected) {
+          btnStyle = 'border-indigo-600 bg-indigo-50/70 ring-1 ring-indigo-600';
+          badgeStyle = 'bg-indigo-600 text-white';
+        }
+
+        const btn = document.createElement('button');
+        btn.className = `w-full text-left p-3.5 sm:p-4 rounded-xl border transition flex items-start gap-3.5 ${btnStyle}`;
+        btn.disabled = showImmediateFeedback;
+        btn.onclick = () => selectOption(idx);
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${badgeStyle}">${letters[idx]}</span>
+          <span class="text-sm sm:text-base text-slate-800 leading-snug">${opt.text}</span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+
+      // Panel de Retroalimentación en Práctica Guiada
+      const fbPanel = document.getElementById('q-feedback-panel');
+      if (showImmediateFeedback) {
+        const selectedOpt = q.shuffledOptions[chosenIdx];
+        const isCorrect = selectedOpt.isCorrect;
+        fbPanel.classList.remove('hidden');
+        fbPanel.className = `mt-6 p-5 rounded-2xl border ${isCorrect ? 'bg-emerald-50/70 border-emerald-200' : 'bg-rose-50/70 border-rose-200'}`;
+        fbPanel.innerHTML = `
+          <div class="flex items-center gap-2 font-bold text-sm mb-2 ${isCorrect ? 'text-emerald-800' : 'text-rose-800'}">
+            <i data-lucide="${isCorrect ? 'check-circle-2' : 'alert-circle'}" class="w-5 h-5"></i>
+            <span>${isCorrect ? '¡Respuesta Correcta! (+25 XP)' : 'Respuesta Incorrecta — Analicemos la trampa ICFES'}</span>
+          </div>
+          ${!isCorrect && selectedOpt.trap ? `<div class="mb-3 p-3 rounded-xl bg-white/80 border border-rose-200 text-xs text-rose-900"><strong>¿Por qué falló tu opción?</strong> ${selectedOpt.trap}</div>` : ''}
+          <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-1">
+            <div class="font-bold text-slate-900 mb-1">Solución paso a paso (${q.competency}):</div>
+            <div>${q.explanation}</div>
+          </div>
+        `;
+      } else {
+        fbPanel.classList.add('hidden');
+      }
+
+      // Controles de navegación
+      document.getElementById('btn-prev-q').disabled = session.currentIndex === 0;
+      const isLast = session.currentIndex === total - 1;
+      document.getElementById('btn-next-q').classList.toggle('hidden', isLast);
+      document.getElementById('btn-finish-exam').classList.toggle('hidden', !isLast && session.mode === 'guided');
+
+      renderQuestionGridNav();
+      lucide.createIcons();
+      renderMath(document.getElementById('exam-workspace'));
+    }
+
+    function selectOption(optIdx) {
+      const q = session.questions[session.currentIndex];
+      const alreadyAnswered = session.userAnswers[q.id] !== undefined;
+      session.userAnswers[q.id] = optIdx;
+
+      if (!alreadyAnswered) {
+        const isCorrect = q.shuffledOptions[optIdx].isCorrect;
+        recordQuestionOutcome(q, isCorrect);
+      }
+
+      renderCurrentQuestion();
+    }
+
+    function recordQuestionOutcome(q, isCorrect) {
+      // Actualizar analítica por subtema y competencia
+      if (!appState.statsByTopic[q.topic]) appState.statsByTopic[q.topic] = { correct: 0, total: 0 };
+      appState.statsByTopic[q.topic].total++;
+      if (isCorrect) appState.statsByTopic[q.topic].correct++;
+
+      if (!appState.statsByCompetency[q.competency]) appState.statsByCompetency[q.competency] = { correct: 0, total: 0 };
+      appState.statsByCompetency[q.competency].total++;
+      if (isCorrect) appState.statsByCompetency[q.competency].correct++;
+
+      appState.totalQuestionsAnswered++;
+      appState.totalTimeSpent += (session.questionTimes[q.id] || 45);
+
+      // Algoritmo de Repetición Espaciada y XP
+      if (isCorrect) {
+        appState.xp += 25;
+        // Si estaba en la cola de repaso, sacarla al dominarla
+        appState.reviewQueue = appState.reviewQueue.filter(id => id !== q.id);
+      } else {
+        if (!appState.reviewQueue.includes(q.id)) {
+          appState.reviewQueue.push(q.id);
+          if (session.mode === 'guided') {
+            showToast('Agregada a tu Cola de Repetición Espaciada para reforzar.', 'warning');
+          }
+        }
+      }
+      saveState();
+    }
+
+    function navigateQuestion(delta) {
+      const nextIdx = session.currentIndex + delta;
+      if (nextIdx >= 0 && nextIdx < session.questions.length) {
+        session.currentIndex = nextIdx;
+        renderCurrentQuestion();
+      }
+    }
+
+    function renderQuestionGridNav() {
+      const grid = document.getElementById('question-grid-nav');
+      grid.innerHTML = '';
+      let answeredCount = 0;
+
+      session.questions.forEach((q, idx) => {
+        const ansIdx = session.userAnswers[q.id];
+        const isAnswered = ansIdx !== undefined;
+        if (isAnswered) answeredCount++;
+
+        let classes = 'bg-slate-100 text-slate-600 hover:bg-slate-200';
+        if (idx === session.currentIndex) {
+          classes = 'bg-indigo-600 text-white ring-2 ring-indigo-300';
+        } else if (isAnswered) {
+          if (session.mode === 'guided') {
+            classes = q.shuffledOptions[ansIdx].isCorrect ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white';
+          } else {
+            classes = 'bg-slate-400 text-white';
+          }
+        }
+
+        const btn = document.createElement('button');
+        btn.className = `h-9 rounded-lg text-xs font-bold transition ${classes}`;
+        btn.textContent = idx + 1;
+        btn.onclick = () => {
+          session.currentIndex = idx;
+          renderCurrentQuestion();
+        };
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('answered-counter').textContent = `${answeredCount}/${session.questions.length} respondidas`;
+    }
+
+    function finishSimulacrum() {
+      session.finished = true;
+      clearInterval(session.timerInterval);
+
+      document.getElementById('exam-workspace').classList.add('hidden');
+      const resultsView = document.getElementById('simulacrum-results-view');
+      resultsView.classList.remove('hidden');
+
+      let correctCount = 0;
+      const total = session.questions.length;
+
+      session.questions.forEach(q => {
+        const ans = session.userAnswers[q.id];
+        if (ans !== undefined && q.shuffledOptions[ans].isCorrect) {
+          correctCount++;
+        }
+      });
+
+      const accuracy = Math.round((correctCount / total) * 100);
+      const projectedMath = Math.min(100, Math.round(35 + accuracy * 0.65));
+
+      document.getElementById('results-summary-cards').innerHTML = `
+        <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-100">
+          <div class="text-xs font-bold text-indigo-600 uppercase">Aciertos Totales</div>
+          <div class="text-2xl font-extrabold text-slate-900 mt-1">${correctCount} / ${total} (${accuracy}%)</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+          <div class="text-xs font-bold text-emerald-700 uppercase">Puntaje Matemáticas Est.</div>
+          <div class="text-2xl font-extrabold text-slate-900 mt-1">${projectedMath} / 100 pts</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+          <div class="text-xs font-bold text-slate-500 uppercase">Tiempo Total</div>
+          <div class="text-2xl font-extrabold text-slate-900 mt-1">${formatTime(session.totalSeconds)}</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-100">
+          <div class="text-xs font-bold text-amber-700 uppercase">Cola de Repaso</div>
+          <div class="text-2xl font-extrabold text-slate-900 mt-1">${appState.reviewQueue.length} preguntas</div>
+        </div>
+      `;
+
+      const list = document.getElementById('results-detailed-list');
+      list.innerHTML = '<h3 class="font-bold text-slate-900 text-base pt-2">Revisión Detallada por Pregunta</h3>';
+
+      session.questions.forEach((q, idx) => {
+        const ans = session.userAnswers[q.id];
+        const isCorrect = ans !== undefined && q.shuffledOptions[ans].isCorrect;
+        const correctOpt = q.shuffledOptions.find(o => o.isCorrect);
+        const userText = ans !== undefined ? q.shuffledOptions[ans].text : '<em>Sin responder</em>';
+
+        const card = document.createElement('div');
+        card.className = `p-5 rounded-2xl border ${isCorrect ? 'bg-emerald-50/40 border-emerald-200' : 'bg-rose-50/40 border-rose-200'} space-y-2`;
+        card.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-bold ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">
+              Pregunta ${idx + 1} • ${q.topic} (${q.competency}) — ${isCorrect ? 'CORRECTA' : 'INCORRECTA'}
+            </span>
+            <span class="text-xs text-slate-500 font-mono">Tiempo: ${formatTime(session.questionTimes[q.id] || 0)}</span>
+          </div>
+          <p class="text-sm font-semibold text-slate-900">${q.prompt}</p>
+          <div class="text-xs text-slate-700"><strong>Tu respuesta:</strong> ${userText}</div>
+          ${!isCorrect ? `<div class="text-xs text-emerald-800"><strong>Respuesta correcta:</strong> ${correctOpt.text}</div>` : ''}
+          <div class="text-xs text-slate-600 pt-2 border-t border-slate-200/70 leading-relaxed">${q.explanation}</div>
+        `;
+        list.appendChild(card);
+      });
+
+      renderMath(resultsView);
+    }
+
+    function openQuestionInLab() {
+      const q = session.questions[session.currentIndex];
+      if (!q || !q.labPreset) return;
+      const p = q.labPreset;
+      labState = {
+        type: p.type,
+        orientation: p.orientation || 'horizontal',
+        h: p.h ?? 0,
+        k: p.k ?? 0,
+        r: p.r ?? 4,
+        a: p.a ?? 5,
+        b: p.b ?? 3,
+        p: p.p ?? 2
+      };
+      switchTab('lab');
+      setLabConic(labState.type, true);
+      showToast(`Cónica cargada desde la Pregunta ${session.currentIndex + 1}`, 'info');
+    }
+
+    // =========================================================================
+    // 6. LABORATORIO INTERACTIVO DE CÓNICAS (HTML5 CANVAS + MATEMÁTICAS)
+    // =========================================================================
+    let labState = {
+      type: 'circle', // 'circle' | 'parabola' | 'ellipse' | 'hyperbola'
+      orientation: 'horizontal', // 'horizontal' | 'vertical'
+      h: 0,
+      k: 0,
+      r: 4,
+      a: 5,
+      b: 3,
+      p: 2
+    };
+
+    function resetLabParams() {
+      labState = { type: labState.type, orientation: 'horizontal', h: 0, k: 0, r: 4, a: 5, b: 3, p: 2 };
+      setLabConic(labState.type);
+    }
+
+    function setLabConic(type, keepParams = false) {
+      labState.type = type;
+      document.querySelectorAll('.lab-conic-btn').forEach(btn => {
+        btn.className = 'lab-conic-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 px-2 rounded-xl text-xs font-bold transition';
+      });
+      document.getElementById(`lab-btn-${type}`).className = 'lab-conic-btn bg-indigo-600 text-white py-2 px-2 rounded-xl text-xs font-bold transition shadow-sm';
+
+      const orientWrapper = document.getElementById('lab-orientation-wrapper');
+      orientWrapper.classList.toggle('hidden', type === 'circle');
+      updateOrientationButtons();
+      buildLabSliders();
+      updateLabCalculationsAndDraw();
+    }
+
+    function setLabOrientation(orient) {
+      labState.orientation = orient;
+      updateOrientationButtons();
+      updateLabCalculationsAndDraw();
+    }
+
+    function updateOrientationButtons() {
+      const hBtn = document.getElementById('lab-orient-h');
+      const vBtn = document.getElementById('lab-orient-v');
+      if (labState.orientation === 'horizontal') {
+        hBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200';
+        vBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-50 text-slate-600 border border-slate-200';
+      } else {
+        vBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200';
+        hBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-50 text-slate-600 border border-slate-200';
+      }
+    }
+
+    function buildLabSliders() {
+      const container = document.getElementById('lab-sliders');
+      const slidersConfig = [
+        { key: 'h', label: 'Centro / Vértice X ($h$)', min: -6, max: 6, step: 1 },
+        { key: 'k', label: 'Centro / Vértice Y ($k$)', min: -6, max: 6, step: 1 }
+      ];
+
+      if (labState.type === 'circle') {
+        slidersConfig.push({ key: 'r', label: 'Radio ($r$)', min: 1, max: 8, step: 0.5 });
+      } else if (labState.type === 'parabola') {
+        slidersConfig.push({ key: 'p', label: 'Distancia focal ($p$)', min: -4, max: 4, step: 0.5 });
+      } else {
+        slidersConfig.push({ key: 'a', label: 'Semieje $a$', min: 2, max: 8, step: 0.5 });
+        slidersConfig.push({ key: 'b', label: 'Semieje $b$', min: 1, max: 7, step: 0.5 });
+      }
+
+      container.innerHTML = slidersConfig.map(s => `
+        <div>
+          <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+            <span>${s.label}</span>
+            <span id="val-${s.key}" class="font-mono text-indigo-600 font-bold">${labState[s.key]}</span>
+          </div>
+          <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${labState[s.key]}"
+            oninput="onSliderChange('${s.key}', this.value)"
+            class="w-full accent-indigo-600 cursor-pointer h-2 bg-slate-200 rounded-lg">
+        </div>
+      `).join('');
+      renderMath(container);
+    }
+
+    function onSliderChange(key, val) {
+      let num = parseFloat(val);
+      if (key === 'p' && num === 0) num = 0.5; // Evitar p = 0 degenerado
+      labState[key] = num;
+      document.getElementById(`val-${key}`).textContent = num;
+      updateLabCalculationsAndDraw();
+    }
+
+    function fmtSign(v, variable) {
+      if (v === 0) return variable;
+      return v > 0 ? `(${variable} - ${v})` : `(${variable} + ${Math.abs(v)})`;
+    }
+
+    function updateLabCalculationsAndDraw() {
+      const { type, orientation, h, k, r, a, b, p } = labState;
+      let canonical = '';
+      let general = '';
+      let elementsHtml = '';
+
+      if (type === 'circle') {
+        const r2 = +(r * r).toFixed(2);
+        canonical = `$$${fmtSign(h, 'x')}^2 + ${fmtSign(k, 'y')}^2 = ${r2}$$`;
+        const D = -2 * h, E = -2 * k, F = +(h * h + k * k - r2).toFixed(2);
+        general = `$$x^2 + y^2 ${D >= 0 ? '+ ' + D : '- ' + Math.abs(D)}x ${E >= 0 ? '+ ' + E : '- ' + Math.abs(E)}y ${F >= 0 ? '+ ' + F : '- ' + Math.abs(F)} = 0$$`;
+        elementsHtml = `
+          <div><strong>Centro $C$:</strong> $(${h}, ${k})$</div>
+          <div><strong>Radio $r$:</strong> $${r}$</div>
+          <div><strong>Diámetro:</strong> $${2 * r}$</div>
+          <div><strong>Área:</strong> $${r2}\\pi$</div>
+        `;
+      } else if (type === 'parabola') {
+        const fourP = +(4 * p).toFixed(2);
+        if (orientation === 'vertical') {
+          canonical = `$$${fmtSign(h, 'x')}^2 = ${fourP}${fmtSign(k, 'y')}$$`;
+          elementsHtml = `
+            <div><strong>Vértice $V$:</strong> $(${h}, ${k})$</div>
+            <div><strong>Foco $F$:</strong> $(${h}, ${+(k + p).toFixed(2)})$</div>
+            <div><strong>Directriz:</strong> $y = ${+(k - p).toFixed(2)}$</div>
+            <div><strong>Lado Recto:</strong> $${Math.abs(fourP)}$</div>
+          `;
+        } else {
+          canonical = `$$${fmtSign(k, 'y')}^2 = ${fourP}${fmtSign(h, 'x')}$$`;
+          elementsHtml = `
+            <div><strong>Vértice $V$:</strong> $(${h}, ${k})$</div>
+            <div><strong>Foco $F$:</strong> $(${+(h + p).toFixed(2)}, ${k})$</div>
+            <div><strong>Directriz:</strong> $x = ${+(h - p).toFixed(2)}$</div>
+            <div><strong>Lado Recto:</strong> $${Math.abs(fourP)}$</div>
+          `;
+        }
+        general = orientation === 'vertical'
+          ? `$$x^2 ${-2*h >= 0 ? '+ ' + (-2*h) : '- ' + Math.abs(2*h)}x ${-fourP >= 0 ? '+ ' + (-fourP) : '- ' + Math.abs(fourP)}y + ${+(h*h + fourP*k).toFixed(2)} = 0$$`
+          : `$$y^2 ${-2*k >= 0 ? '+ ' + (-2*k) : '- ' + Math.abs(2*k)}y ${-fourP >= 0 ? '+ ' + (-fourP) : '- ' + Math.abs(fourP)}x + ${+(k*k + fourP*h).toFixed(2)} = 0$$`;
+      } else if (type === 'ellipse') {
+        const A_semi = Math.max(a, b);
+        const B_semi = Math.min(a, b);
+        const c = +Math.sqrt(A_semi * A_semi - B_semi * B_semi).toFixed(2);
+        const ecc = +(c / A_semi).toFixed(2);
+        const a2 = +(A_semi * A_semi).toFixed(2);
+        const b2 = +(B_semi * B_semi).toFixed(2);
+
+        if (orientation === 'horizontal') {
+          canonical = `$$\\frac{${fmtSign(h, 'x')}^2}{${a2}} + \\frac{${fmtSign(k, 'y')}^2}{${b2}} = 1$$`;
+          elementsHtml = `
+            <div><strong>Centro $C$:</strong> $(${h}, ${k})$</div>
+            <div><strong>Vértices:</strong> $(${h} \\pm ${A_semi}, ${k})$</div>
+            <div><strong>Focos:</strong> $(${h} \\pm ${c}, ${k})$</div>
+            <div><strong>Excentricidad:</strong> $e = ${ecc}$</div>
+          `;
+        } else {
+          canonical = `$$\\frac{${fmtSign(h, 'x')}^2}{${b2}} + \\frac{${fmtSign(k, 'y')}^2}{${a2}} = 1$$`;
+          elementsHtml = `
+            <div><strong>Centro $C$:</strong> $(${h}, ${k})$</div>
+            <div><strong>Vértices:</strong> $(${h}, ${k} \\pm ${A_semi})$</div>
+            <div><strong>Focos:</strong> $(${h}, ${k} \\pm ${c})$</div>
+            <div><strong>Excentricidad:</strong> $e = ${ecc}$</div>
+          `;
+        }
+        general = orientation === 'horizontal'
+          ? `$$${b2}x^2 + ${a2}y^2 + Dx + Ey + F = 0$$`
+          : `$$${a2}x^2 + ${b2}y^2 + Dx + Ey + F = 0$$`;
+      } else if (type === 'hyperbola') {
+        const c = +Math.sqrt(a * a + b * b).toFixed(2);
+        const ecc = +(c / a).toFixed(2);
+        const a2 = +(a * a).toFixed(2);
+        const b2 = +(b * b).toFixed(2);
+
+        if (orientation === 'horizontal') {
+          canonical = `$$\\frac{${fmtSign(h, 'x')}^2}{${a2}} - \\frac{${fmtSign(k, 'y')}^2}{${b2}} = 1$$`;
+          elementsHtml = `
+            <div><strong>Centro $C$:</strong> $(${h}, ${k})$</div>
+            <div><strong>Vértices:</strong> $(${h} \\pm ${a}, ${k})$</div>
+            <div><strong>Focos:</strong> $(${h} \\pm ${c}, ${k})$</div>
+            <div><strong>Asíntotas:</strong> $y - ${k} = \\pm\\frac{${b}}{${a}}(x - ${h})$</div>
+          `;
+        } else {
+          canonical = `$$\\frac{${fmtSign(k, 'y')}^2}{${a2}} - \\frac{${fmtSign(h, 'x')}^2}{${b2}} = 1$$`;
+          elementsHtml = `
+            <div><strong>Centro $C$:</strong> $(${h}, ${k})$</div>
+            <div><strong>Vértices:</strong> $(${h}, ${k} \\pm ${a})$</div>
+            <div><strong>Focos:</strong> $(${h}, ${k} \\pm ${c})$</div>
+            <div><strong>Asíntotas:</strong> $y - ${k} = \\pm\\frac{${a}}{${b}}(x - ${h})$</div>
+          `;
+        }
+        general = orientation === 'horizontal'
+          ? `$$${b2}x^2 - ${a2}y^2 + Dx + Ey + F = 0$$`
+          : `$$${b2}y^2 - ${a2}x^2 + Dx + Ey + F = 0$$`;
+      }
+
+      document.getElementById('lab-canonical-eq').innerHTML = canonical;
+      document.getElementById('lab-general-eq').innerHTML = general;
+      document.getElementById('lab-elements-list').innerHTML = elementsHtml;
+      renderMath(document.getElementById('view-lab'));
+      resizeAndDrawCanvas();
+    }
+
+    function resizeAndDrawCanvas() {
+      const wrapper = document.getElementById('canvas-wrapper');
+      const canvas = document.getElementById('conic-canvas');
+      if (!wrapper || !canvas || wrapper.clientWidth === 0) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = wrapper.clientWidth * dpr;
+      canvas.height = wrapper.clientHeight * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      const W = wrapper.clientWidth;
+      const H = wrapper.clientHeight;
+      const cx = W / 2;
+      const cy = H / 2;
+      const scale = Math.min(W, H) / 22; // Rango de -11 a 11 unidades
+
+      // Fondo y cuadrícula
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+
+      for (let x = cx % scale; x < W; x += scale) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+      }
+      for (let y = cy % scale; y < H; y += scale) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+
+      // Ejes X e Y
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
+
+      // Números en ejes
+      ctx.fillStyle = '#64748b';
+      ctx.font = '10px JetBrains Mono';
+      for (let i = -10; i <= 10; i += 2) {
+        if (i === 0) continue;
+        ctx.fillText(i, cx + i * scale - 5, cy + 13);
+        ctx.fillText(i, cx + 6, cy - i * scale + 3);
+      }
+
+      const toPxX = x => cx + x * scale;
+      const toPxY = y => cy - y * scale;
+      const { type, orientation, h, k, r, a, b, p } = labState;
+
+      // Dibujar Cónica
+      ctx.strokeStyle = '#4f46e5';
+      ctx.lineWidth = 3;
+
+      if (type === 'circle') {
+        ctx.beginPath();
+        ctx.arc(toPxX(h), toPxY(k), r * scale, 0, Math.PI * 2);
+        ctx.stroke();
+        drawPoint(ctx, toPxX(h), toPxY(k), '#f59e0b', `C(${h},${k})`);
+      } else if (type === 'parabola') {
+        ctx.beginPath();
+        let first = true;
+        for (let t = -12; t <= 12; t += 0.1) {
+          let x, y;
+          if (orientation === 'vertical') {
+            x = h + t;
+            y = k + (t * t) / (4 * p);
+          } else {
+            y = k + t;
+            x = h + (t * t) / (4 * p);
+          }
+          const px = toPxX(x), py = toPxY(y);
+          if (first) { ctx.moveTo(px, py); first = false; }
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+
+        // Directriz
+        ctx.save();
+        ctx.strokeStyle = '#0ea5e9';
+        ctx.setLineDash([5, 5]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        if (orientation === 'vertical') {
+          ctx.moveTo(0, toPxY(k - p)); ctx.lineTo(W, toPxY(k - p));
+        } else {
+          ctx.moveTo(toPxX(h - p), 0); ctx.lineTo(toPxX(h - p), H);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        drawPoint(ctx, toPxX(h), toPxY(k), '#10b981', `V(${h},${k})`);
+        if (orientation === 'vertical') drawPoint(ctx, toPxX(h), toPxY(k + p), '#f43f5e', 'F');
+        else drawPoint(ctx, toPxX(h + p), toPxY(k), '#f43f5e', 'F');
+      } else if (type === 'ellipse') {
+        const A_s = Math.max(a, b), B_s = Math.min(a, b);
+        const c = Math.sqrt(A_s * A_s - B_s * B_s);
+        const rx = orientation === 'horizontal' ? A_s * scale : B_s * scale;
+        const ry = orientation === 'horizontal' ? B_s * scale : A_s * scale;
+
+        ctx.beginPath();
+        ctx.ellipse(toPxX(h), toPxY(k), rx, ry, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        drawPoint(ctx, toPxX(h), toPxY(k), '#f59e0b', 'C');
+        if (orientation === 'horizontal') {
+          drawPoint(ctx, toPxX(h - c), toPxY(k), '#f43f5e', 'F1');
+          drawPoint(ctx, toPxX(h + c), toPxY(k), '#f43f5e', 'F2');
+          drawPoint(ctx, toPxX(h - A_s), toPxY(k), '#10b981', 'V1');
+          drawPoint(ctx, toPxX(h + A_s), toPxY(k), '#10b981', 'V2');
+        } else {
+          drawPoint(ctx, toPxX(h), toPxY(k - c), '#f43f5e', 'F1');
+          drawPoint(ctx, toPxX(h), toPxY(k + c), '#f43f5e', 'F2');
+          drawPoint(ctx, toPxX(h), toPxY(k - A_s), '#10b981', 'V1');
+          drawPoint(ctx, toPxX(h), toPxY(k + A_s), '#10b981', 'V2');
+        }
+      } else if (type === 'hyperbola') {
+        const c = Math.sqrt(a * a + b * b);
+
+        // Asíntotas punteadas
+        ctx.save();
+        ctx.strokeStyle = '#94a3b8';
+        ctx.setLineDash([5, 5]);
+        ctx.lineWidth = 1.5;
+        const slope = orientation === 'horizontal' ? (b / a) : (a / b);
+        ctx.beginPath();
+        ctx.moveTo(toPxX(h - 15), toPxY(k - 15 * slope));
+        ctx.lineTo(toPxX(h + 15), toPxY(k + 15 * slope));
+        ctx.moveTo(toPxX(h - 15), toPxY(k + 15 * slope));
+        ctx.lineTo(toPxX(h + 15), toPxY(k - 15 * slope));
+        ctx.stroke();
+        ctx.restore();
+
+        // Dos ramas de la hipérbola
+        [-1, 1].forEach(sign => {
+          ctx.beginPath();
+          let first = true;
+          for (let t = -2.2; t <= 2.2; t += 0.08) {
+            let x, y;
+            if (orientation === 'horizontal') {
+              x = h + sign * a * Math.cosh(t);
+              y = k + b * Math.sinh(t);
+            } else {
+              x = h + b * Math.sinh(t);
+              y = k + sign * a * Math.cosh(t);
+            }
+            const px = toPxX(x), py = toPxY(y);
+            if (first) { ctx.moveTo(px, py); first = false; }
+            else ctx.lineTo(px, py);
+          }
+          ctx.stroke();
+        });
+
+        drawPoint(ctx, toPxX(h), toPxY(k), '#f59e0b', 'C');
+        if (orientation === 'horizontal') {
+          drawPoint(ctx, toPxX(h - c), toPxY(k), '#f43f5e', 'F1');
+          drawPoint(ctx, toPxX(h + c), toPxY(k), '#f43f5e', 'F2');
+          drawPoint(ctx, toPxX(h - a), toPxY(k), '#10b981', 'V1');
+          drawPoint(ctx, toPxX(h + a), toPxY(k), '#10b981', 'V2');
+        } else {
+          drawPoint(ctx, toPxX(h), toPxY(k - c), '#f43f5e', 'F1');
+          drawPoint(ctx, toPxX(h), toPxY(k + c), '#f43f5e', 'F2');
+          drawPoint(ctx, toPxX(h), toPxY(k - a), '#10b981', 'V1');
+          drawPoint(ctx, toPxX(h), toPxY(k + a), '#10b981', 'V2');
+        }
+      }
+    }
+
+    function drawPoint(ctx, x, y, color, label) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      if (label) {
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 11px Inter';
+        ctx.fillText(label, x + 7, y - 6);
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      if (!document.getElementById('view-lab').classList.contains('hidden')) {
+        resizeAndDrawCanvas();
+      }
+    });
+
+    // =========================================================================
+    // 7. DUELO 1 VS 1 RÁPIDO CONTRA BOT ICFES
+    // =========================================================================
+    let duel = {
+      questions: [],
+      round: 0,
+      playerScore: 0,
+      botScore: 0,
+      botInterval: null,
+      botName: 'Sofía'
+    };
+
+    function startDuel(difficulty) {
+      duel.questions = shuffleArray(QUESTION_BANK).slice(0, 5).map(q => ({
+        ...q,
+        shuffledOptions: shuffleArray(q.options)
+      }));
+      duel.round = 0;
+      duel.playerScore = 0;
+      duel.botScore = 0;
+      duel.botName = difficulty === 'hard' ? 'Apolonio Bot (Élite)' : 'Sofía (Saber 11)';
+
+      document.getElementById('duel-lobby').classList.add('hidden');
+      document.getElementById('duel-arena').classList.remove('hidden');
+      document.getElementById('duel-question-card').classList.remove('hidden');
+      document.getElementById('duel-result-card').classList.add('hidden');
+      document.getElementById('duel-bot-name').textContent = duel.botName;
+
+      updateDuelBars();
+      renderDuelRound();
+
+      const botSpeedMs = difficulty === 'hard' ? 6500 : 10000;
+      const botAccuracy = difficulty === 'hard' ? 0.85 : 0.65;
+
+      if (duel.botInterval) clearInterval(duel.botInterval);
+      duel.botInterval = setInterval(() => {
+        if (duel.botScore < 500) {
+          if (Math.random() < botAccuracy) {
+            duel.botScore += 100;
+            updateDuelBars();
+          }
+        }
+      }, botSpeedMs);
+    }
+
+    function updateDuelBars() {
+      document.getElementById('duel-player-score').textContent = `${duel.playerScore} pts`;
+      document.getElementById('duel-bot-score').textContent = `${duel.botScore} pts`;
+      document.getElementById('duel-player-bar').style.width = `${(duel.playerScore / 500) * 100}%`;
+      document.getElementById('duel-bot-bar').style.width = `${(duel.botScore / 500) * 100}%`;
+    }
+
+    function renderDuelRound() {
+      if (duel.round >= 5) {
+        endDuel();
+        return;
+      }
+      const q = duel.questions[duel.round];
+      document.getElementById('duel-q-counter').textContent = `Ronda ${duel.round + 1} de 5`;
+      document.getElementById('duel-q-topic').textContent = q.topic;
+      document.getElementById('duel-q-text').innerHTML = `${q.context} <strong>${q.prompt}</strong>`;
+
+      const optsDiv = document.getElementById('duel-options');
+      optsDiv.innerHTML = '';
+      q.shuffledOptions.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'p-3.5 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 text-left text-xs sm:text-sm font-medium transition';
+        btn.innerHTML = opt.text;
+        btn.onclick = () => {
+          if (opt.isCorrect) {
+            duel.playerScore += 100;
+            showToast('¡Acierto rápido! +100 pts en el duelo', 'success');
+          } else {
+            showToast('Fallaste esa ronda. ¡Sigue adelante!', 'error');
+          }
+          duel.round++;
+          updateDuelBars();
+          renderDuelRound();
+        };
+        optsDiv.appendChild(btn);
+      });
+      renderMath(document.getElementById('duel-question-card'));
+    }
+
+    function endDuel() {
+      clearInterval(duel.botInterval);
+      document.getElementById('duel-question-card').classList.add('hidden');
+      const resCard = document.getElementById('duel-result-card');
+      resCard.classList.remove('hidden');
+
+      const won = duel.playerScore >= duel.botScore;
+      if (won) {
+        appState.xp += 60;
+        saveState();
+      }
+      document.getElementById('duel-result-title').textContent = won
+        ? `¡Victoria! Ganaste ${duel.playerScore} a ${duel.botScore}`
+        : `Derrota por poco (${duel.playerScore} vs ${duel.botScore})`;
+      document.getElementById('duel-result-desc').textContent = won
+        ? 'Has ganado +60 XP extra por vencer en la Arena ICFES de Cónicas.'
+        : 'Tu rival fue más rápido. Practica en el Laboratorio de Cónicas y vuelve por la revancha.';
+    }
+
+    function resetDuelLobby() {
+      clearInterval(duel.botInterval);
+      document.getElementById('duel-arena').classList.add('hidden');
+      document.getElementById('duel-lobby').classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // 8. ANALÍTICA, MAPA DE CALOR Y REPETICIÓN ESPACIADA
+    // =========================================================================
+    function renderAnalyticsDashboard() {
+      // Calcular precisión global
+      let totalCorrect = 0, totalAttempted = 0;
+      let weakestTopic = 'Parábola', lowestPct = 101;
+
+      const topicsContainer = document.getElementById('heatmap-topics');
+      topicsContainer.innerHTML = '';
+
+      Object.entries(appState.statsByTopic).forEach(([topic, data]) => {
+        totalCorrect += data.correct;
+        totalAttempted += data.total;
+        const pct = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+        if (pct < lowestPct) {
+          lowestPct = pct;
+          weakestTopic = topic;
+        }
+
+        const barColor = pct >= 75 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-rose-500';
+        const badgeColor = pct >= 75 ? 'text-emerald-700 bg-emerald-50' : pct >= 50 ? 'text-amber-700 bg-amber-50' : 'text-rose-700 bg-rose-50';
+
+        topicsContainer.innerHTML += `
+          <div>
+            <div class="flex justify-between items-center text-xs font-semibold mb-1.5">
+              <span class="text-slate-800">${topic}</span>
+              <span class="px-2 py-0.5 rounded-md ${badgeColor}">${pct}% (${data.correct}/${data.total})</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+              <div class="${barColor} h-2.5 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById('study-recommendation-box').innerHTML =
+        `<strong>Ruta Recomendada:</strong> Tu área con mayor oportunidad de mejora es <strong>${weakestTopic} (${lowestPct}% de acierto)</strong>. Te sugerimos explorarla en el Laboratorio Gráfico y realizar un filtro específico.`;
+
+      // Competencias ICFES
+      const compContainer = document.getElementById('heatmap-competencies');
+      compContainer.innerHTML = '';
+      Object.entries(appState.statsByCompetency).forEach(([comp, data]) => {
+        const pct = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+        const barColor = pct >= 75 ? 'bg-indigo-600' : pct >= 50 ? 'bg-sky-500' : 'bg-rose-500';
+        compContainer.innerHTML += `
+          <div>
+            <div class="flex justify-between items-center text-xs font-semibold mb-1.5">
+              <span class="text-slate-800">${comp}</span>
+              <span class="text-slate-600">${pct}% (${data.correct}/${data.total})</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+              <div class="${barColor} h-2.5 rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      // Puntaje Proyectado ICFES
+      const globalAcc = totalAttempted > 0 ? totalCorrect / totalAttempted : 0.65;
+      const projMath = Math.min(100, Math.round(35 + globalAcc * 65));
+      const projGlobal = Math.min(500, Math.round(210 + projMath * 2.4));
+      document.getElementById('proj-math-score').textContent = projMath;
+      document.getElementById('proj-global-score').textContent = projGlobal;
+
+      let levelDesc = 'Nivel 2 • En desarrollo';
+      if (projMath >= 80) levelDesc = 'Nivel 4 • Excelencia Analítica Saber 11';
+      else if (projMath >= 65) levelDesc = 'Nivel 3 • Buen dominio de modelación';
+      document.getElementById('proj-math-level').textContent = levelDesc;
+
+      const avgSec = appState.totalQuestionsAnswered > 0
+        ? Math.round(appState.totalTimeSpent / appState.totalQuestionsAnswered)
+        : 95;
+      document.getElementById('analytics-avg-time').textContent = formatTime(avgSec);
+
+      // Cola de Repetición Espaciada
+      const reviewList = document.getElementById('spaced-repetition-list');
+      const btnPractice = document.getElementById('btn-practice-review');
+      if (appState.reviewQueue.length === 0) {
+        btnPractice.disabled = true;
+        reviewList.innerHTML = `<div class="col-span-2 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-medium">¡Al día! No tienes preguntas pendientes en tu cola de repetición espaciada.</div>`;
+      } else {
+        btnPractice.disabled = false;
+        reviewList.innerHTML = appState.reviewQueue.map(id => {
+          const q = QUESTION_BANK.find(item => item.id === id);
+          if (!q) return '';
+          return `
+            <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 flex items-start justify-between gap-3">
+              <div>
+                <span class="text-[11px] font-bold text-amber-800 uppercase">${q.topic} • ${q.competency}</span>
+                <p class="text-xs text-slate-800 font-medium mt-1 line-clamp-2">${q.prompt}</p>
+              </div>
+              <span class="px-2 py-1 rounded-lg bg-amber-600 text-white text-[10px] font-bold shrink-0">Pendiente</span>
+            </div>
+          `;
+        }).join('');
+      }
+      renderMath(document.getElementById('view-analytics'));
+    }
+
+    function practiceSpacedRepetition() {
+      document.getElementById('topic-filter').value = 'REVIEW';
+      switchTab('exam');
+      startNewSession();
+    }
+
+    // =========================================================================
+    // INICIALIZACIÓN AL CARGAR LA PÁGINA
+    // =========================================================================
+    window.onload = function () {
+      lucide.createIcons();
+      updateHeaderGamification();
+      setLabConic('circle');
+      startNewSession();
+    };
+  </script>
+</body>
+</html>
